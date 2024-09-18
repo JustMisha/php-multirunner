@@ -1,0 +1,7 @@
+/.git export-ignore
+/tests export-ignore
+coverage_report.xml export-ignore
+phpcs.xml export-ignore
+phpunit.xml export-ignore
+phpunit.exclude-python-node.xml export-ignore
+psalm.xml export-ignore

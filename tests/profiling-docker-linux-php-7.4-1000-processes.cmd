@@ -1,0 +1,1 @@
+docker run --rm -v %cd%/../:/home/src/app -w /home/src/app  php:7.4-cli php tests/profiling-1000-processes.php

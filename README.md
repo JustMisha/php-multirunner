@@ -1,0 +1,167 @@
+[![ru](docs/ru.svg)](docs/README.ru.md)
+# MultiRunner
+
+A package for running multiple processes in parallel in the background and, if necessary,
+get the results of their work.
+
+Unlike found analogs[^1]:
+- very simple interface;
+- can run any program, script or code, which interpreter is installed in the system;
+- works on both Windows and Linux.
+
+Under the hood, it uses proc_open() to start processes and hides numerous complexities 
+and peculiarities of working with processes in PHP.
+
+It does not require any other packages or extensions to be installed.
+
+## Usage
+
+### Run a single PHP script many times with different parameters and get its output messages.
+```php
+<?php
+
+    use \JustMisha\MultiRunner\ScriptMultiRunner;
+
+    $maxParallelProcesses = 512;    //  determined by the machine on which it is runs
+    try {
+        $runner = ScriptMultiRunner($maxParallelProcesses, "/full/path/to/script");
+    } catch (RuntimeException $e) {
+        // handle an exception
+    }
+
+    for($i = 1; $i <= 1000000; $i++) {
+        $changingArg1 = $i - 1;
+        $changingArg2 = $i + 1;
+        $runner->addProcess((string)$i, $changingArg, $changingArg2);
+    }
+    $timeout = 15; // Timeout in seconds, depending on the machine it is running on.
+    try {
+        $results = $runner->runAndWaitForResults($timeout);
+    } catch (RuntimeException $e) {
+        // handle an exception
+    }
+    
+    foreach($results as $processId => $processResult) {
+        if $processResult['exitCode'] !== 0 {
+            echo "There were errors in " . $processId . ": " . $processResult['stderr'];
+            continue;
+        }
+        $result = $processResult['stdout'];
+        // handle a success result, whatever it is
+        
+    };
+```
+
+### General description of the interface
+
+Six different classes can be used depending on the objects that are launched for execution:
+
+| Object to be run                                                             | Class used             |
+|------------------------------------------------------------------------------|------------------------|
+| Program                                                                      | ProgramMultiRunner     |
+| Miscellaneous Programs                                                       | DiffProgramMultiRunner |
+| Script                                                                       | ScriptMultiRunner      |
+| Different scripts (and/or different interpreters)                            | DiffScriptMultiRunner  | 
+| Code created in your program                                                 | CodeMultiRunner        | 
+| Different code (possibly for different interpreters) created in your program | DiffCodeMultiRunner    | 
+
+The signature of the constructors of all these classes and their ``addProcess()`` method will naturally be different.
+
+In any case, the first parameter of the constructor will always be the number of concurrent parallel processes 
+that can be launched. This number depends entirely on the machine on which the package is running, 
+that's why it is the first parameter and has no default value
+> Explicit is better than implicit.
+> --- [The Zen of Python](https://peps.python.org/pep-0020)
+
+A good starting point would be 512 simultaneous parallel processes.
+
+And then there are three possible use cases:
+1. Run and get the results of all running processes &mdash; ```runAndWaitForResults()```;
+2. Run and forget (do nothing) &mdash; ```runAndForget()```;
+3. Run and get the first N results &mdash; ```runAndWaitForTheFirstNthResults()```.
+
+### More examples
+
+[Run one program many times with different parameters and get its messages about the results of its work](docs/OneProgramRunAndWaitForResults.md)
+
+[Run one program many times with different parameters and do nothing else (run and forget)](docs/OneProgramRunAndForget.md)
+
+[Run a single PHP script many times with different parameters and get its output messages](docs/OneScriptRunAndWaitForResults.md)
+
+[Run one PHP script many times with different parameters and get only a certain number of messages about the results (do not wait for all running processes to execute)](docs/OneScriptRunAndWaitForNthResults.md)
+
+[Run one Python script many times with different parameters and get its output messages](docs/OnePythonScriptRunAndWaitForResults.md)
+
+[Run one PHP script many times with different parameters and do nothing (run and forget).](docs/OneScriptRunAndForget.md)
+
+[Run different scripts with different parameters and get his messages about the results of the work](docs/DiffScriptsRunAndWaitForResults.md)
+
+[Run different scripts with different parameters and do nothing (run and forget)](docs/DiffScriptsRunAndForget.md)
+
+[Run the PHP code many times with different parameters and get its output messages](docs/CodeRunAndWaitForResults.md)
+
+[Run the PHP code many times with different parameters and do nothing (run and forget)](docs/CodeRunAndForget.md)
+
+[Run PHP, python, and node.js code with different parameters and get its output messages](docs/DiffCodeRunAndWaitForResults.md)
+
+[Run PHP, python, and node.js code with different parameters and do nothing (run and forget)](docs/DiffCodeRunAndForget.md)
+
+## Installation
+### You will need:
+
+* [php](https://www.php.net/) (version >=7.4);
+* [Git](https://git-scm.com) - for development;
+* [Composer](https://getcomposer.org/) - to use in your project.
+
+
+### For use in your project
+```
+composer require justmisha/php-multirunner
+```
+### For development
+
+In the local project folder, execute
+```
+git clone https://github.com/JustMisha/php-multirunner.git your-folder-for-php-multirunner-code
+```
+
+## Testing
+
+Run all tests, including linters and static analyzers, from the root of the project folder:
+```
+composer test
+```
+To run only unit tests:
+```
+composer phpunit
+```
+The package was developed in Windows, so to run the tests in Linux via Docker
+you can use the ```tests\test-linux-all-php.cmd``` command file, which will run the
+unit tests in Docker containers with php-cli 7.4, 8.0, 8.1, 8.2, 8.3. Or you can run a run
+tests for each php version using a different file (e.g. ```test-linux-php-7.4.cmd```).
+
+The tests use the python and node.js interpreters. If you don't have them installed,
+then run the tests with the command line option ```--exclude python,node``` or use the configuration file 
+```phpunit.exclude-python-node.xml``` configuration file.
+
+## Contributing
+
+Please send your suggestions, comments, and pull requests.
+
+For large changes, please open a discussion to discuss your suggestions.
+
+For pull requests, please make appropriate changes to the tests.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning.
+
+## Authors
+
+* **Mikhail Trusov** - *php-multirunner* - [php-multirunner](https://github.com/JustMisha/php-multirunner)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

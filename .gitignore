@@ -1,0 +1,7 @@
+/.idea
+/*.cache
+/vendor
+/metrics
+/phpMessDetector.html
+/coverage_report.xml
+/html_docs

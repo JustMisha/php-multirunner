@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="LKP php coding standard" namespace="ru\itcomgk\lkp\standard">
+    <description>
+        <h1>MultiRunner php coding standard</h1>
+        <p>Based on PSR-12 with some excludings:</p>
+        <ul>
+            <li>Windows line endings "\r\n" are also allowed</li>
+            <li>Blank lines are allowed in control stucture</li>
+            <li>Side effects are allowed in index.php files</li>
+            <li>"else if" can be written separately</li>
+            <li>New line is obligatory after closing brace</li>
+        </ul>
+    </description>
+
+    <rule ref="PSR12">
+    </rule>
+    <rule ref="Squiz.Commenting">
+        <exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
+        <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <exclude name="Squiz.Commenting.PostStatementComment.Found"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamName"/>
+        <exclude name="Squiz.Commenting.FileComment.IncorrectAuthor"/>
+        <exclude name="Squiz.Commenting.FileComment.IncorrectCopyright"/>
+        <exclude name="Squiz.Commenting.FileComment.SubpackageTagOrder"/>
+        <exclude name="Squiz.Commenting.FileComment.MissingSubpackageTag"/>
+        <exclude name="Squiz.Commenting.FileComment.MissingAuthorTag"/>
+        <exclude name="Squiz.Commenting.ClassComment.TagNotAllowed"/>
+        <exclude name="Squiz.Commenting.FunctionCommentThrowTag.WrongNumber"/>
+        <exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
+    </rule>
+</ruleset>

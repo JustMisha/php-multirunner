@@ -1,0 +1,42 @@
+{
+    "name": "justmisha/php-multirunner",
+    "description": "The package gives the ability to run multiple processes (programs and scripts) in parallel in the background.",
+    "type": "library",
+    "license": "MIT License",
+    "homepage": "https://github.com/JustMisha/php-multirunner",
+    "autoload": {
+        "psr-4": {
+            "JustMisha\\MultiRunner\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JustMisha\\MultiRunner\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikhail Trusov",
+            "email": "admin@superprogrammist.ru"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=9.6",
+        "phpstan/phpstan": ">=1.10"
+    },
+    "scripts": {
+        "test": [
+            "@phpcs",
+            "@psalm",
+            "@phpstan",
+            "phpunit"
+        ],
+        "psalm": "psalm --show-info=true",
+        "phpcs": "phpcs src -s",
+        "phpunit": "phpunit",
+        "phpstan": "vendor/bin/phpstan analyse src --level 9 --verbose"
+    }
+}

@@ -1,0 +1,1 @@
+docker run --rm --cap-add LINUX_IMMUTABLE -v %cd%/../:/home/src/app -w /home/src/app  php:8.3-cli php vendor/bin/phpunit --exclude python,node
