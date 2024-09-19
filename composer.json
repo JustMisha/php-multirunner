@@ -25,7 +25,9 @@
     },
     "require-dev": {
         "phpunit/phpunit": ">=9.6",
-        "phpstan/phpstan": ">=1.10"
+        "phpstan/phpstan": ">=1.10",
+        "vimeo/psalm": ">=5",
+        "squizlabs/php_codesniffer": "*"
     },
     "scripts": {
         "test": [
@@ -34,8 +36,8 @@
             "@phpstan",
             "phpunit"
         ],
-        "psalm": "psalm --show-info=true",
-        "phpcs": "phpcs src -s",
+        "psalm": "vendor/bin/psalm --show-info=true",
+        "phpcs": "vendor/bin/phpcs src -s",
         "phpunit": "phpunit",
         "phpstan": "vendor/bin/phpstan analyse src --level 9 --verbose"
     }
