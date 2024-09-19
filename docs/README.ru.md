@@ -4,7 +4,7 @@
 Пакет для запуска множества процессов параллельно в фоне и, если необходимо, 
 получения результатов их работы.
 
-В отличие от найденных аналогов[^1]:
+[В отличие от найденных аналогов](#analogues):
 - очень простой интерфейс;
 - может запускать любую программу, скрипт или код, интерпретатор которых установлен в системе;
 - работает как в Windows, так и в Линукс.
@@ -166,10 +166,11 @@ composer phpunit
 
 Данный пакет лицензируется на условиях MIT Лицензии - смотри подробности [LICENSE.md](../LICENSE.md) file for details
 
-[1]: 
-Список найденных аналогов:
+<a id="analogues"></a>
+## Найденные аналогичные пакеты
 - <https://packagist.org/packages/amphp/parallel>
 - <https://packagist.org/packages/cocur/background-process>
 - <https://packagist.org/packages/fastbill/parallel-process-dispatcher>
 - <https://packagist.org/packages/gerkirill/parallel-processing>
 - <https://packagist.org/packages/matecat/taskrunner>
+

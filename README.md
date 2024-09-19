@@ -4,7 +4,8 @@
 A package for running multiple processes in parallel in the background and, if necessary,
 get the results of their work.
 
-Unlike found analogs[^1]:
+[Unlike found analogs](#analogues):
+:
 - very simple interface;
 - can run any program, script or code, which interpreter is installed in the system;
 - works on both Windows and Linux.
@@ -165,3 +166,11 @@ See also the list of [contributors](https://github.com/your/project/contributors
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+<a id="analogues"></a>
+## Similar packages found
+- <https://packagist.org/packages/amphp/parallel>
+- <https://packagist.org/packages/cocur/background-process>
+- <https://packagist.org/packages/fastbill/parallel-process-dispatcher>
+- <https://packagist.org/packages/gerkirill/parallel-processing>
+- <https://packagist.org/packages/matecat/taskrunner>
