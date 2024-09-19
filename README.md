@@ -56,15 +56,12 @@ It does not require any other packages or extensions to be installed.
 ### General description of the interface
 
 Six different classes can be used depending on the objects that are launched for execution:
-
-| Object to be run                                                             | Class used             |
-|------------------------------------------------------------------------------|------------------------|
-| Program                                                                      | ProgramMultiRunner     |
-| Miscellaneous Programs                                                       | DiffProgramMultiRunner |
-| Script                                                                       | ScriptMultiRunner      |
-| Different scripts (and/or different interpreters)                            | DiffScriptMultiRunner  | 
-| Code created in your program                                                 | CodeMultiRunner        | 
-| Different code (possibly for different interpreters) created in your program | DiffCodeMultiRunner    | 
+1. **ProgramMultiRunner** to run several instances of one program;
+2. **DiffProgramMultiRunner** to run miscellaneous programs;
+3. **ScriptMultiRunner** to run several instances of one script;
+4. **DiffScriptMultiRunner** to run different scripts (and/or even different interpreters);
+5. **CodeMultiRunner** to run any code created in your program;
+6. **DiffCodeMultiRunner** to run different code (possibly for different interpreters) created in your program.
 
 The signature of the constructors of all these classes and their ``addProcess()`` method will naturally be different.
 
