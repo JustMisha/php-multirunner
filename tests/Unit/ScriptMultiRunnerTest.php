@@ -3,6 +3,7 @@
 namespace JustMisha\MultiRunner\Tests\Unit;
 
 
+use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\ScriptMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
@@ -25,11 +26,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello",
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, "Hello", "");
 
         $this->assertCount(($totalProcessNums), $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -57,11 +54,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $this->assertLessThan($totalProcessNums * $programRunningTime, $totalTime);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello",
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, "Hello", "");
 
         $this->assertCount($totalProcessNums, $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -92,11 +85,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello",
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, "Hello", "");
 
         $this->assertCount(($totalProcessNums), $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -126,11 +115,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-                            'exitCode' => 0,
-                            'stdout' => "Hello",
-                            'stderr' => "",
-                          ];
+        $expectedResult = new ProcessResults(0, "Hello", "");
 
         $this->assertCount(($totalProcessNums), $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -160,11 +145,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $this->assertLessThan($totalProcessNums * $programRunningTime, $totalTime);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $complicatedArgument,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0,  $complicatedArgument,"");
 
         $this->assertCount($totalProcessNums, $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -188,11 +169,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello",
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, "Hello", "");
 
         $this->assertCount(($totalProcessNums), $results);
         $this->assertEquals($expectedResult, $results[1]);

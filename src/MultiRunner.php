@@ -13,6 +13,7 @@ use ErrorException;
 use RuntimeException;
 use Throwable;
 use JustMisha\MultiRunner\DTO\ProcessInQueueData;
+use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\DTO\RunningProcessData;
 use JustMisha\MultiRunner\Helpers\OsCommandsWrapper;
 
@@ -110,7 +111,7 @@ abstract class MultiRunner
      * and their results are returned or the timeout occurs.
      *
      * @param integer $waitTime             Seconds to wait for results.
-     * @return array<string, array{'stdout': string, 'stderr': string, 'exitCode': int}>
+     * @return array<string, ProcessResults>
      * @throws RuntimeException If something goes wrong
      *                          when a process is started or a timeout occurs.
      *
@@ -143,7 +144,7 @@ abstract class MultiRunner
      *
      * @param integer $waitTime             Seconds to wait for results.
      * @param integer $resultsNumberToAwait How many finished processes to await.
-     * @return array<string, array{'stdout': string, 'stderr': string, 'exitCode': int}>
+     * @return array<string, ProcessResults>
      * @throws RuntimeException If something goes wrong when a process is started or a timeout occurs.
      *
      * @SuppressWarnings(PHPMD.CountInLoopExpression)
@@ -194,11 +195,8 @@ abstract class MultiRunner
      * from {@see $runningProcesses}.
      *
      * @param integer $timeLimit Unix time at which the timeout occurs.
-     * @return array<string, array{'stdout': string, 'stderr': string, 'exitCode': int}>
+     * @return array<string, ProcessResults>
      * @throws RuntimeException If the timeout occurs.
-     *
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
      */
     protected function getResultsAndCloseCompletedProcesses(int $timeLimit): array
     {
@@ -216,11 +214,14 @@ abstract class MultiRunner
             // Because phpstan thinks proc_get_status can return false.
             /* @phpstan-ignore offsetAccess.nonOffsetAccessible */
             if ($procStatus['running'] === false) {
-                $results[$processId]['stdout'] = $processData->stdout;
-                $results[$processId]['stderr'] = $processData->stderr;
                 // Thanks to https://www.php.net/manual/en/function.proc-close.php#83622.
-                $exitCode = $this->closeProcess($processId, $processData);
-                $results[$processId]['exitCode'] = $procStatus["exitcode"] === -1 ? $exitCode : $procStatus["exitcode"];
+                $exitCodeWhenClose = $this->closeProcess($processId, $processData);
+                $exitCode = $procStatus["exitcode"] === -1 ? $exitCodeWhenClose : $procStatus["exitcode"];
+                $results[$processId] = new ProcessResults(
+                    $exitCode,
+                    $processData->stdout,
+                    $processData->stderr
+                );
             }
         }
         return $results;

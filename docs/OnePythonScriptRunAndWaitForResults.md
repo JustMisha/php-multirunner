@@ -24,12 +24,12 @@
         // handle a runtime exception
     }
     
-    foreach($results as $processId => $processResult) {
-        if $processResult['exitCode'] !== 0 {
-            echo "There were errors in " . $processId . ": " . $processResult['stderr'];
+    foreach ($results as $processId => $processResult) {
+        if $processResult->exitCode !== 0 {
+            echo "There were errors in " . $processId . ": " . $processResult->stderr;
             continue;
         }
-        $result = $processResult['stdout'];
+        $result = $processResult->stdout;
         // handle a success result, whatever it is
         
     };
