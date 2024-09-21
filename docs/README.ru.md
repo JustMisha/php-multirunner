@@ -4,10 +4,14 @@
 Пакет для запуска множества процессов параллельно в фоне и, если необходимо, 
 получения результатов их работы.
 
+Прежде всего, такое параллельное выполнение позволит радикально сократить время 
+выполнения множества задач.
+
 [В отличие от найденных аналогов](#analogues):
 - очень простой интерфейс;
 - может запускать любую программу, скрипт или код, интерпретатор которых установлен в системе;
-- работает как в Windows, так и в Линукс.
+- работает как в Windows, так и в Линукс;
+- позволяет передавать большие объемы данных между процессами — тестами подтверждено около 2 Мб.
 
 Под капотом для запуска процессов использует proc_open() и скрывает многочисленные сложности и особенности работы
 с процессами в PHP.
@@ -43,12 +47,12 @@
         // handle a runtime exception
     }
     
-    foreach($results as $processId => $processResult) {
-        if $processResult['exitCode'] != 0 {
-            echo "There were errors in " . $processId . ": " . $processResult['stderr'];
+    foreach ($results as $processId => $processResult) {
+        if $processResult->exitCode !== 0 {
+            echo "There were errors in " . $processId . ": " . $processResult->stderr;
             continue;
         }
-        $result = $processResult['stdout'];
+        $result = $processResult->stdout;
         // handle a success result, whatever it is
         
     };
@@ -110,8 +114,8 @@
 ### Для работы будет нужно:
 
   * [php](https://www.php.net/) (version  >=7.4);
-  * [Git](https://git-scm.com) — для разработки;
-  * [Composer](https://getcomposer.org/) — для использования в своем проекте
+  * [Composer](https://getcomposer.org/);
+  * [Git](https://git-scm.com) — для разработки.
 
 
 ### Для использования в своем проекте
@@ -123,6 +127,8 @@ composer require justmisha/php-multirunner
 В локальной папке проекта выполнить
 ```
 git clone https://github.com/JustMisha/php-multirunner.git your-folder-for-php-multirunner-code
+
+composer install
 ```
 
 ## Тестирование

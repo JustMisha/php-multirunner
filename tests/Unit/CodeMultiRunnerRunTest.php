@@ -4,6 +4,7 @@ namespace JustMisha\MultiRunner\Tests\Unit;
 
 
 use JustMisha\MultiRunner\CodeMultiRunner;
+use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
 
@@ -39,11 +40,7 @@ class CodeMultiRunnerRunTest extends BaseTestCase
         if ($result === false) {
             throw new \Exception("Cannot read contents of $fileFullPathWithLongContents.");
         }
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, $result, "");
         $this->standardTestRun(60, 5, 5, '<?php' . PHP_EOL . 'echo "' . $result . '";', $expectedResult);
     }
 
@@ -51,11 +48,7 @@ class CodeMultiRunnerRunTest extends BaseTestCase
     {
         $result = str_repeat("a", 1000000);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, $result, "");
         $this->standardTestRun(20, 5, 5, '<?php' . PHP_EOL . 'echo "' . $result . '";', $expectedResult);
     }
 
@@ -70,11 +63,7 @@ echo str_repeat("b", $symbolsNumbers);
 HEREDOC;
         $result = str_repeat("a", $symbolsNumbers) . str_repeat("b", $symbolsNumbers);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, $result, "");
         $this->standardTestRun(30, 5, 5, $scriptText, $expectedResult);
     }
 
@@ -94,17 +83,11 @@ HEREDOC;
 
         $results = $runner->runAndWaitForResults(5);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "1",
-            'stderr' => "",
-        ];
+
+        $expectedResult = new ProcessResults(0, "1", "");
         $this->assertEquals($expectedResult, $results[1]);
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "10",
-            'stderr' => "",
-        ];
+
+        $expectedResult = new ProcessResults(0, "10", "");
         $this->assertEquals($expectedResult, $results[10]);
 
     }
@@ -123,12 +106,17 @@ HEREDOC;
      * @param array<string, mixed> $expectedResult
      * @throws \Exception
      */
-    private function standardTestRun(int $timeout, int $maxParallelProcessNums, int $totalProcessNums = 10, string $scriptText = '<?php' . PHP_EOL . 'echo "Hahaha";', array $expectedResult = [
-        'exitCode' => 0,
-        'stdout' => 'Hahaha',
-        'stderr' => "",
-    ]): void
+    private function standardTestRun(
+        int $timeout,
+        int $maxParallelProcessNums,
+        int $totalProcessNums = 10,
+        string $scriptText = '<?php' . PHP_EOL . 'echo "Hahaha";',
+        ProcessResults $expectedResult = null
+    ): void
     {
+        if (is_null($expectedResult)) {
+            $expectedResult = new ProcessResults(0, 'Hahaha', '');
+        }
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
         $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
 
@@ -153,7 +141,8 @@ HEREDOC;
     public function testsRunAndForget(): void
     {
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
-        $testFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'proba' . DIRECTORY_SEPARATOR . '_'  . __FUNCTION__ . time();
+        $testFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR
+            . 'proba' . DIRECTORY_SEPARATOR . '_'  . __FUNCTION__ . time();
         if (!file_exists($testFolder)) {
             mkdir($testFolder, 0777, true);
         }
@@ -240,12 +229,7 @@ HEREDOC;
 
         $results = $runner->runAndWaitForTheFirstNthResults($timeout, $resultsNumberToAwait);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
-
+        $expectedResult = new ProcessResults(0, $result, "");
         unset($runner);
 
         $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
@@ -273,11 +257,7 @@ HEREDOC;
 
         $results = $runner->runAndWaitForTheFirstNthResults($timeout, $resultsNumberToAwait);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, $result, "");
 
         unset($runner);
 
@@ -319,9 +299,9 @@ HEREDOC;
 
         $this->assertCount(($totalProcessNums), $results);
 
-        $this->assertEquals($result, trim($results[1]['stdout']));
+        $this->assertEquals($result, trim($results[1]->stdout));
 
-        $this->assertEquals($result, trim($results[$totalProcessNums]['stdout']));
+        $this->assertEquals($result, trim($results[$totalProcessNums]->stdout));
 
         unset($runner);
         $this->assertBaseFolderClear($baseFolder);
@@ -361,11 +341,7 @@ HEREDOC;
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, $result, "");
 
         $this->assertCount($totalProcessNums, $results);
         $this->assertEquals($expectedResult, $results["1"]);
@@ -403,17 +379,13 @@ HEREDOC;
             throw $t;
         }
 
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i);
         }
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $result,
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, $result, "");
 
         $this->assertCount($totalProcessNums, $results);
         $this->assertEquals($expectedResult, $results['1']);

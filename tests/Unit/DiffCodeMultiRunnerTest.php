@@ -62,8 +62,8 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
         $results = $runner->runAndWaitForResults($timeout);
 
         $this->assertCount(2, $results);
-        $this->assertEquals($result, trim($results['cmdOrBash']['stdout']));
-        $this->assertEquals($result, trim($results['python']['stdout']));
+        $this->assertEquals($result, trim($results['cmdOrBash']->stdout));
+        $this->assertEquals($result, trim($results['python']->stdout));
 
         unset($runner);
         $this->assertBaseFolderClear($baseFolder);

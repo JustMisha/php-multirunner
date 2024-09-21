@@ -4,11 +4,15 @@
 A package for running multiple processes in parallel in the background and, if necessary,
 get the results of their work.
 
+First of all, such parallel execution will radically reduce the amount of time it takes 
+to complete multiple tasks.
+
 [Unlike found analogs](#analogues):
 :
 - very simple interface;
 - can run any program, script or code, which interpreter is installed in the system;
-- works on both Windows and Linux.
+- works on both Windows and Linux;
+- allows transferring large amounts of data between processes -  tests confirmed about 2Mb.
 
 Under the hood, it uses proc_open() to start processes and hides numerous complexities 
 and peculiarities of working with processes in PHP.
@@ -42,12 +46,12 @@ It does not require any other packages or extensions to be installed.
         // handle an exception
     }
     
-    foreach($results as $processId => $processResult) {
-        if $processResult['exitCode'] !== 0 {
-            echo "There were errors in " . $processId . ": " . $processResult['stderr'];
+    foreach ($results as $processId => $processResult) {
+        if $processResult->exitCode !== 0 {
+            echo "There were errors in " . $processId . ": " . $processResult->stderr;
             continue;
         }
-        $result = $processResult['stdout'];
+        $result = $processResult->stdout;
         // handle a success result, whatever it is
         
     };
@@ -108,8 +112,8 @@ And then there are three possible use cases:
 ### You will need:
 
 * [php](https://www.php.net/) (version >=7.4);
-* [Git](https://git-scm.com) - for development;
-* [Composer](https://getcomposer.org/) - to use in your project.
+* [Composer](https://getcomposer.org/);
+* [Git](https://git-scm.com) - for development.
 
 
 ### For use in your project
@@ -121,6 +125,8 @@ composer require justmisha/php-multirunner
 In the local project folder, execute
 ```
 git clone https://github.com/JustMisha/php-multirunner.git your-folder-for-php-multirunner-code
+
+composer install
 ```
 
 ## Testing

@@ -4,6 +4,7 @@ namespace JustMisha\MultiRunner\Tests\Unit;
 
 
 use JustMisha\MultiRunner\DiffProgramMultiRunner;
+use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
 
@@ -28,11 +29,7 @@ class DiffProgramMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello world!",
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, "Hello world!", "");
 
         $this->assertCount(($totalProcessNums), $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -66,11 +63,7 @@ class DiffProgramMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello world!",
-            'stderr' => "",
-        ];
+        $expectedResult = new ProcessResults(0, "Hello world!", "");
 
         $this->assertCount(($totalProcessNums), $results);
         $this->assertEquals($expectedResult, $results[1]);

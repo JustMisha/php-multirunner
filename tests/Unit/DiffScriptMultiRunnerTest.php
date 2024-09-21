@@ -4,6 +4,7 @@ namespace JustMisha\MultiRunner\Tests\Unit;
 
 
 use JustMisha\MultiRunner\DiffScriptMultiRunner;
+use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
 
@@ -52,17 +53,11 @@ class DiffScriptMultiRunnerTest extends BaseTestCase
 
 
         $this->assertCount(($totalProcessNums), $results);
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello",
-            'stderr' => "",
-        ];
+
+        $expectedResult = new ProcessResults(0, "Hello", "");
         $this->assertEquals($expectedResult, $results[1]);
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => $complicatedArgument,
-            'stderr' => "",
-        ];
+
+        $expectedResult = new ProcessResults(0, $complicatedArgument, "");
         $this->assertEquals($expectedResult, $results[$totalProcessNums]);
 
         unset($runner);
@@ -84,17 +79,11 @@ class DiffScriptMultiRunnerTest extends BaseTestCase
         $results = $runner->runAndWaitForResults($timeout);
 
         $this->assertCount(($totalProcessNums), $results);
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello1",
-            'stderr' => "",
-        ];
+
+        $expectedResult = new ProcessResults(0, "Hello1", "");
         $this->assertEquals($expectedResult, $results[1]);
-        $expectedResult = [
-            'exitCode' => 0,
-            'stdout' => "Hello"  . $totalProcessNums,
-            'stderr' => "",
-        ];
+
+        $expectedResult = new ProcessResults(0, "Hello"  . $totalProcessNums, "");
         $this->assertEquals($expectedResult, $results[$totalProcessNums]);
 
         unset($runner);
