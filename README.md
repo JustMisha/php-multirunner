@@ -1,18 +1,18 @@
 [![ru](docs/ru.svg)](docs/README.ru.md)
-# MultiRunner
+# PHP MultiRunner
 
 A package for running multiple processes in parallel in the background and, if necessary,
 get the results of their work.
 
-First of all, such parallel execution will radically reduce the amount of time it takes 
-to complete multiple tasks.
+It is clear that, first of all, such parallel execution allows you to radically reduce 
+the time of all these processes.
 
-[Unlike found analogs](#analogues):
-:
-- very simple interface;
-- can run any program, script or code, which interpreter is installed in the system;
+Unlike [found analogs](#analogues), the package:
+
+- has a very simple interface;
+- can run any program, script or code that has an interpreter installed on the system;
 - works on both Windows and Linux;
-- allows transferring large amounts of data between processes -  tests confirmed about 2Mb.
+- allows to transfer large amounts of data between processes and your code - tests confirmed about 2Mb.
 
 Under the hood, it uses proc_open() to start processes and hides numerous complexities 
 and peculiarities of working with processes in PHP.
