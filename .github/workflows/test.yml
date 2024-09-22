@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 jobs:
   php-tests:
+    permissions:
+      contents: write
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
