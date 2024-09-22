@@ -7,8 +7,7 @@ get the results of their work.
 It is clear that, first of all, such parallel execution allows you to radically reduce 
 the time of all these processes.
 
-Unlike [found analogs](#analogues), the package:
-
+This package:
 - has a very simple interface;
 - can run any program, script or code that has an interpreter installed on the system;
 - works on both Windows and Linux;
@@ -168,12 +167,4 @@ See also the list of [contributors](https://github.com/your/project/contributors
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-<a id="analogues"></a>
-## Similar packages found
-- <https://packagist.org/packages/amphp/parallel>
-- <https://packagist.org/packages/cocur/background-process>
-- <https://packagist.org/packages/fastbill/parallel-process-dispatcher>
-- <https://packagist.org/packages/gerkirill/parallel-processing>
-- <https://packagist.org/packages/matecat/taskrunner>
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
