@@ -7,7 +7,7 @@
 Понятно, что прежде всего, такое параллельное выполнение позволяет радикально сократить время 
 выполнения всех этих процессов.
 
-В отличие от [найденных аналогов](#analogues), пакет:
+Этот пакет:
 - имеет очень простой интерфейс;
 - может запускать любую программу, скрипт или код, интерпретатор которых установлен в системе;
 - работает как в Windows, так и в Линукс;
@@ -170,13 +170,5 @@ composer phpunit
 
 ## License
 
-Данный пакет лицензируется на условиях MIT Лицензии - смотри подробности [LICENSE.md](../LICENSE.md) file for details
-
-<a id="analogues"></a>
-## Найденные аналогичные пакеты
-- <https://packagist.org/packages/amphp/parallel>
-- <https://packagist.org/packages/cocur/background-process>
-- <https://packagist.org/packages/fastbill/parallel-process-dispatcher>
-- <https://packagist.org/packages/gerkirill/parallel-processing>
-- <https://packagist.org/packages/matecat/taskrunner>
+Данный пакет лицензируется на условиях MIT Лицензии - смотри подробности [LICENSE.md](../LICENSE.md).
 
