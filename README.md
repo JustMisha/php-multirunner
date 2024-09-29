@@ -81,6 +81,29 @@ And then there are three possible use cases:
 2. Run and forget (do nothing) &mdash; ```runAndForget()```;
 3. Run and get the first N results &mdash; ```runAndWaitForTheFirstNthResults()```.
 
+### Dependency inversion during dependency injection
+
+If you need to pass some ```MultiRunner``` child class as a parameter to a constructor or other method,
+it is worth using the ```MultiRunnerInterface``` interface to remove the dependency on a particular class.
+```php
+    public function someMethodInSomeClass(MultiRunnerInterface $runner) {
+        ...
+        $processId = 0;
+        foreach ($params as $param) {
+            $processId++;
+            $runner->addProcess((string)$processId, $param);
+        }
+        $timeToWait = 60;
+        
+        try {
+            $results = $runner->runAndWaitForResults($timeToWait);
+        } catch (RuntimeException $e) {
+            ...
+        }               
+        ...
+    }
+```
+
 ### More examples
 
 [Run one program many times with different parameters and get its messages about the results of its work](docs/OneProgramRunAndWaitForResults.md)

@@ -33,7 +33,7 @@ use JustMisha\MultiRunner\Helpers\OsCommandsWrapper;
  * @psalm-api
  *                              }
  */
-abstract class MultiRunner
+abstract class MultiRunner implements MultiRunnerInterface
 {
     protected const STDIN = 0;
     protected const STDOUT = 1;
