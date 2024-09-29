@@ -395,18 +395,4 @@ HEREDOC;
         $this->assertBaseFolderClear($baseFolder);
 
     }
-
-    /**
-     * Check whether a base folder clear
-     * after destroying BackgroundParallelProcesses
-     *
-     * @param string $baseFolder
-     * @return void
-     */
-    protected function assertBaseFolderClear(string $baseFolder): void
-    {
-        $dirIterator = new \FilesystemIterator($baseFolder, \FilesystemIterator::SKIP_DOTS);
-        $this->assertFalse($dirIterator->valid());
-    }
-
 }

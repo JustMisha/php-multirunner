@@ -85,6 +85,29 @@
 2. Запустить и забыть (ничего не делать) &mdash; ```runAndForget()```;
 3. Запустить и получить первые N результатов  &mdash; ```runAndWaitForTheFirstNthResults()```.
 
+### Инверсия зависимости при внедрении зависимости
+
+Если нужно передать какой-либо класс-наследник ```MultiRunner``` как параметр в конструктор или другой метод,
+то стоит воспользоваться интерфейсом ```MultiRunnerInterface```, чтобы убрать зависимость от конкретного класса.
+```php
+    public function someMethodInSomeClass(MultiRunnerInterface $runner) {
+        ...
+        $processId = 0;
+        foreach ($params as $param) {
+            $processId++;
+            $runner->addProcess((string)$processId, $param);
+        }
+        $timeToWait = 60;
+        
+        try {
+            $results = $runner->runAndWaitForResults($timeToWait);
+        } catch (RuntimeException $e) {
+            ...
+        }               
+        ...
+    }
+```
+
 ### Другие примеры
 [Запустить одну программу много раз с разными параметрами и получить ее сообщения о результатах работы](OneProgramRunAndWaitForResults.md)
 

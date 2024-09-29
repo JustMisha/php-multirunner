@@ -51,7 +51,7 @@ namespace JustMisha\MultiRunner\Tests {
     class BaseTestCase extends \PHPUnit\Framework\TestCase
     {
 
-        const MAX_PARALLEL_PROCESSES = 100;
+        public const MAX_PARALLEL_PROCESSES = 100;
 
         protected function isWindows(): bool
         {
@@ -80,6 +80,19 @@ namespace JustMisha\MultiRunner\Tests {
                     exec(sprintf("rm -rf %s", escapeshellarg($dir)));
                 }
             }
+        }
+
+        /**
+         * Check whether a base folder clear
+         * after destroying BackgroundParallelProcesses
+         *
+         * @param string $baseFolder
+         * @return void
+         */
+        protected function assertBaseFolderClear(string $baseFolder): void
+        {
+            $dirIterator = new \FilesystemIterator($baseFolder, \FilesystemIterator::SKIP_DOTS);
+            $this->assertFalse($dirIterator->valid());
         }
     }
 }
