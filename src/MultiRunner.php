@@ -98,7 +98,10 @@ abstract class MultiRunner implements MultiRunnerInterface
      */
     public function runAndForget(int $waitTime): void
     {
-        if ($this->maxNumberParallelProcesses >= count($this->processesQueue) && $this->isCwdOrEnvVarsNull()) {
+        if (
+            $this->maxNumberParallelProcesses >= count($this->processesQueue) &&
+            $this->canProcessesRunViaPopen()
+        ) {
             $this->justRunAndForget();
             return;
         }
@@ -473,38 +476,44 @@ abstract class MultiRunner implements MultiRunnerInterface
      * This method executes all the commands in the process queue
      * in the fastest possible way and forget about them.
      *
-     * It should only be called if $cwd is null and
-     * $maxParallelProcesses >= count($this->processesQueue).
+     * It should only be called if:
+     * - $cwd and $envVars are null and
+     * - $maxParallelProcesses >= count($this->processesQueue) and
+     * - there are no % symbols in the command line.
      *
      * @return void
      * @throws RuntimeException If some process cannot be launched.
      */
     protected function justRunAndForget(): void
     {
-        foreach ($this->processesQueue as $processData) {
-            $command = $processData->commandLine;
+        foreach ($this->processesQueue as $processInQueueData) {
             if ($this->osCommandsWrapper->isWindows()) {
                 // Based on https://stackoverflow.com/a/17682046. Thank you jeb!
-                if (!$fp = popen("start \"\" /B CALL " . $command . ' 1>Nul 2>&1', "r")) {
-                    throw new RuntimeException('Cannot run ' . $command);
+                if (!$fp = popen("start \"\" /B CALL " . $processInQueueData->commandLine . " 1>Nul 2>&1", "r")) {
+                    throw new RuntimeException('Cannot run ' . $processInQueueData->commandLine);
                 }
                 pclose($fp);
             } else {
-                exec($command . " > /dev/null &");
+                exec($processInQueueData->commandLine . " > /dev/null &");
             }
         }
     }
 
     /**
-     * Check to see if there are any cwd or envVars parameters
-     * in the processesQueue that are not null.
+     * Check if processes can be run via popen().
+     *
+     * There are no cwd or envVars parameters or % symbol in the command line.
      *
      * @return boolean
      */
-    protected function isCwdOrEnvVarsNull(): bool
+    protected function canProcessesRunViaPopen(): bool
     {
         foreach ($this->processesQueue as $processParams) {
-            if (!empty($processParams->cwd) || !empty($processParams->envVars)) {
+            if (
+                !empty($processParams->cwd) ||
+                !empty($processParams->envVars) ||
+                strpos($processParams->commandLine, '%') !== false
+            ) {
                 return false;
             }
         }
