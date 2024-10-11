@@ -154,6 +154,50 @@ class ScriptMultiRunnerTest extends BaseTestCase
         unset($runner);
     }
 
+    public function testRunAndJustForgetWithDelayAndComplicatedArgument(): void
+    {
+        $complicatedArgument = 'String with "C:\\quotes\\" or malicious %OS% (&()[]{}^=;!\'+,`~) stuff \\';
+        $complicatedArgument .= '&()[]{}^=;!\'+,`~';
+        $testDir = dirname(__FILE__,2) . DIRECTORY_SEPARATOR .
+            'proba' .  DIRECTORY_SEPARATOR . 'complicatedArguments';
+        if (!file_exists($testDir)) {
+            $oldMask = umask();
+            mkdir($testDir, 0777, true);
+            umask($oldMask);
+        }
+
+        $scriptFullPath = dirname(__FILE__, 2) .
+            DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR .
+            'sleep_3_sec_and_put_file_contents_2nd_argument.php';
+        $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath);
+
+        $totalProcessNums = 5;
+        for($i = 1; $i <= $totalProcessNums; $i++) {
+            $runner->addProcess((string)$i, (string)$i, $complicatedArgument);
+        }
+
+        $timeout = 5;
+        $programRunningTime = 3;
+        $startTime = microtime(true);
+        $runner->runAndForget($timeout);
+        $totalTime = microtime(true) - $startTime;
+
+        $this->assertLessThan($totalProcessNums * $programRunningTime, $totalTime);
+
+        sleep($programRunningTime * 2);
+
+        $fileContents1 = file_get_contents($testDir . DIRECTORY_SEPARATOR . '1');
+        $fileContents5 = file_get_contents($testDir . DIRECTORY_SEPARATOR . '5');
+
+        $this->clearFolder($testDir);
+
+
+        $this->assertEquals($complicatedArgument, $fileContents1);
+        $this->assertEquals($complicatedArgument, $fileContents5);
+
+        unset($runner);
+    }
+
     public function testRunWithCWD(): void
     {
         $scriptFullPath = 'echo_hello.php';
