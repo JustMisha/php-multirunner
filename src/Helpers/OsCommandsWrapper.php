@@ -70,28 +70,6 @@ class OsCommandsWrapper
     }
 
     /**
-     * Inserts quotation marks around the special characters
-     * in $argument.
-     *
-     * You must use quotation marks around the following special characters:
-     * & < > [ ] | { } ^ = ; ! ' + , ` ~ [white space].
-     * (from {@link https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd})
-     *
-     * @param string $argument A string for quotation.
-     * @return string
-     * @psalm-api
-     */
-    public function quoteArgumentForWinCmd(string $argument): string
-    {
-        $charsToEscape = str_split("&()[]{}^=;!'+,`~ ");
-        $argumentArray = str_split($argument);
-        if (array_intersect($charsToEscape, $argumentArray)) {
-            return '"' . $argument . '"';
-        }
-        return $argument;
-    }
-
-    /**
      * Escapes $value as a commandline argument for different OS the right way
      *
      * @param string $arg A string to escape.
