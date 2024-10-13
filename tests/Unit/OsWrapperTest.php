@@ -9,11 +9,11 @@ use JustMisha\MultiRunner\Tests\BaseTestCase;
 
 class OsWrapperTest extends BaseTestCase
 {
-    public function testEscapeWhitespace(): void
+    public function testEscapeComplicatedArgument(): void
     {
         $osWrapper = new OsCommandsWrapper();
-        // &()[]{}^=;!'+,`~ "
-        self::assertContains('"', str_split($osWrapper->quoteArgumentForWinCmd('bla bla')));
+        $complicatedArgument = ' &()[]{}^=;!\'+,`~ "';
+        self::assertContains('"', str_split($osWrapper->escapeArgWin32($complicatedArgument)));
 
     }
 }

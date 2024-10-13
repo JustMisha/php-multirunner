@@ -68,7 +68,7 @@ namespace JustMisha\MultiRunner\Tests {
         }
 
         /**
-         * @param string $dir
+         * @param string $dir A directory name to clear.
          * @return void
          */
         protected function clearFolder(string $dir): void

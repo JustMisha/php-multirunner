@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * MultiRunner main interface: MultiRunnerInterface
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
+
 namespace JustMisha\MultiRunner;
 
 use JustMisha\MultiRunner\DTO\ProcessResults;
 
 /**
- * @method addProcess
+ * The interface defines methods to run multiple processes in parallel
+ * and possibly getting their results (outputs).
+ *
  */
 interface MultiRunnerInterface
 {
@@ -15,6 +24,8 @@ interface MultiRunnerInterface
      *
      * @param integer $waitTime Seconds to wait for results.
      * @return array<string, ProcessResults>
+     *
+     * @psalm-api
      */
     public function runAndWaitForResults(int $waitTime): array;
 
@@ -25,6 +36,8 @@ interface MultiRunnerInterface
      *
      * @param integer $waitTime Seconds to wait for results.
      * @return void
+     *
+     * @psalm-api
      */
     public function runAndForget(int $waitTime): void;
 
@@ -36,6 +49,8 @@ interface MultiRunnerInterface
      * @param integer $waitTime Seconds to wait for results.
      * @param integer $resultsNumberToAwait How many finished processes to await.
      * @return array<string, ProcessResults>
+     *
+     * @psalm-api
      */
     public function runAndWaitForTheFirstNthResults(int $waitTime, int $resultsNumberToAwait): array;
 }
