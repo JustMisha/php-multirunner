@@ -2,15 +2,12 @@
 
 namespace JustMisha\MultiRunner\Tests\Unit;
 
-
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\ScriptMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
-
 class ScriptMultiRunnerTest extends BaseTestCase
 {
-
     public function testStandardRun(): void
     {
         $scriptFullPath = dirname(__FILE__, 2) .
@@ -18,7 +15,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath);
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i);
         }
 
@@ -42,7 +39,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath);
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i);
         }
 
@@ -77,7 +74,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i);
         }
 
@@ -102,12 +99,18 @@ class ScriptMultiRunnerTest extends BaseTestCase
     public function testRunPythonWithoutDelay(): void
     {
         $scriptFullPath = dirname(__FILE__, 2) .
-            DIRECTORY_SEPARATOR . 'fixtures'. DIRECTORY_SEPARATOR . 'print_hello.py';
-        $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath, null,
-            'python', [], ['PATH' => getenv('Path'), 'SYSTEMROOT' => getenv('SYSTEMROOT')]);
+            DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'print_hello.py';
+        $runner = new ScriptMultiRunner(
+            self::MAX_PARALLEL_PROCESSES,
+            $scriptFullPath,
+            null,
+            'python',
+            [],
+            ['PATH' => getenv('Path'), 'SYSTEMROOT' => getenv('SYSTEMROOT')]
+        );
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i);
         }
 
@@ -133,7 +136,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath);
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i, $complicatedArgument);
         }
 
@@ -145,7 +148,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         $this->assertLessThan($totalProcessNums * $programRunningTime, $totalTime);
 
-        $expectedResult = new ProcessResults(0,  $complicatedArgument,"");
+        $expectedResult = new ProcessResults(0, $complicatedArgument, "");
 
         $this->assertCount($totalProcessNums, $results);
         $this->assertEquals($expectedResult, $results[1]);
@@ -158,7 +161,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
     {
         $complicatedArgument = 'String with "C:\\quotes\\" or malicious %OS% (&()[]{}^=;!\'+,`~) stuff \\';
         $complicatedArgument .= '&()[]{}^=;!\'+,`~';
-        $testDir = dirname(__FILE__,2) . DIRECTORY_SEPARATOR .
+        $testDir = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR .
             'proba' .  DIRECTORY_SEPARATOR . 'complicatedArguments';
         if (!file_exists($testDir)) {
             $oldMask = umask();
@@ -172,7 +175,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath);
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i, (string)$i, $complicatedArgument);
         }
 
@@ -205,7 +208,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $runner = new ScriptMultiRunner(self::MAX_PARALLEL_PROCESSES, $scriptFullPath, $cwd);
 
         $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
             $runner->addProcess((string)$i);
         }
 
@@ -220,6 +223,5 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $this->assertEquals($expectedResult, $results[$totalProcessNums]);
 
         unset($runner);
-
     }
 }
