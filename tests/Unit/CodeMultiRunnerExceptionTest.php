@@ -1,14 +1,29 @@
 <?php
 
+/**
+ * class CodeMultiRunnerExceptionTest
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
+
 namespace JustMisha\MultiRunner\Tests\Unit;
 
-use Exception;
 use JustMisha\MultiRunner\CodeMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
-
+/**
+ * Check whether CodeMultiRunner's constructor throws exceptions
+ * in the right cases.
+ *
+ */
 class CodeMultiRunnerExceptionTest extends BaseTestCase
 {
+    /**
+     * Prepare a test.
+     *
+     * @return void
+     */
     protected function setUp(): void
     {
         global $mockMkdir;
@@ -18,29 +33,42 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
         $this->clearRuntimeFolder();
     }
 
+    /**
+     * Check CodeMultiRunner's constructor throws an exception
+     * if an interpreter is not found.
+     *
+     * @return void
+     */
     public function testThrowExceptionIfInterpreterNotFound(): void
     {
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . '/runtime';
         $this->expectExceptionMessage('Interpreter Hahaha not found');
-        $bc = new CodeMultiRunner(5, '$result = "Hahaha";', 'Hahaha', [], $baseFolder, null, null);
+        new CodeMultiRunner(
+            5,
+            '$result = "Hahaha";',
+            'Hahaha',
+            [],
+            $baseFolder,
+            null,
+            null
+        );
     }
 
     /**
-     * Check whether constructor throws an exception
+     * Check whether CodeMultiRunner's constructor throws an exception
      * when there are no rights to baseFolder
      *
      * To make it work in docker, it must be started
      * with "--cap-add LINUX_IMMUTABLE" argument
      *
      * @return void
-     * @throws Exception
      */
     public function testThrowExceptionIfFolderCannotBeCreated(): void
     {
         if ($this->isWindows()) {
             $baseFolder = dirname('c:\Windows\runtime');
         } else {
-            $baseFolder = dirname('/tmp/runtime/'.time());
+            $baseFolder = dirname('/tmp/runtime/' . time());
             if (!file_exists($baseFolder)) {
                 mkdir($baseFolder);
             }
@@ -49,7 +77,15 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
 
         $this->expectExceptionMessage('Cannot create the folder for processing');
         $this->expectException('RuntimeException');
-        $bc = new CodeMultiRunner(5, '<?php echo "Hahaha";', 'php', [], $baseFolder, null, null);
+        new CodeMultiRunner(
+            5,
+            '<?php echo "Hahaha";',
+            'php',
+            [],
+            $baseFolder,
+            null,
+            null
+        );
 
         if (!$this->isWindows()) {
             exec(sprintf("chattr -i %s", escapeshellarg($baseFolder)));
@@ -57,6 +93,12 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
         }
     }
 
+    /**
+     * Check whether CodeMultiRunner's constructor throws an exception
+     * if a main script cannot be saved.
+     *
+     * @return void
+     */
     public function testThrowsExceptionIfMainScriptCannotBeSaved(): void
     {
         global $mockFilePutContents;
@@ -64,10 +106,24 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
 
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
         $this->expectExceptionMessage('Cannot create the main script for processing');
-        $bc = new CodeMultiRunner(50, '<?php echo "Hahaha";', 'php', [], $baseFolder, null, null);
+        new CodeMultiRunner(
+            50,
+            '<?php echo "Hahaha";',
+            'php',
+            [],
+            $baseFolder,
+            null,
+            null
+        );
         $mockFilePutContents = false;
     }
 
+    /**
+     * Check whether CodeMultiRunner's constructor throws an exception
+     * if a base folder cannot be created.
+     *
+     * @return void
+     */
     public function testThrowsExceptionIfBaseFolderCannotBeCreated(): void
     {
         global $mockMkdir;
@@ -75,7 +131,15 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
 
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
         $this->expectExceptionMessage('Cannot create the folder for processing');
-        $bc = new CodeMultiRunner(50, '<?php echo "Hahaha";', 'php', [], $baseFolder, null, null);
+        new CodeMultiRunner(
+            50,
+            '<?php echo "Hahaha";',
+            'php',
+            [],
+            $baseFolder,
+            null,
+            null
+        );
         $mockMkdir = false;
     }
 }
