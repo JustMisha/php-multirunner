@@ -104,7 +104,7 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
         global $mockFilePutContents;
         $mockFilePutContents = true;
 
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $this->expectExceptionMessage('Cannot create the main script for processing');
         new CodeMultiRunner(
             50,
@@ -129,7 +129,7 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
         global $mockMkdir;
         $mockMkdir = true;
 
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $this->expectExceptionMessage('Cannot create the folder for processing');
         new CodeMultiRunner(
             50,

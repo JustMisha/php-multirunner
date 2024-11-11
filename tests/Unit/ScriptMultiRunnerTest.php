@@ -3,6 +3,7 @@
 namespace JustMisha\MultiRunner\Tests\Unit;
 
 use JustMisha\MultiRunner\DTO\ProcessResults;
+use JustMisha\MultiRunner\Helpers\OsCommandsWrapper;
 use JustMisha\MultiRunner\ScriptMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
@@ -192,7 +193,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
         $fileContents1 = file_get_contents($testDir . DIRECTORY_SEPARATOR . '1');
         $fileContents5 = file_get_contents($testDir . DIRECTORY_SEPARATOR . '5');
 
-        $this->clearFolder($testDir);
+        $this->osCommandsWrapper->removeDirRecursive($testDir);
 
 
         $this->assertEquals($complicatedArgument, $fileContents1);
