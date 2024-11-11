@@ -41,6 +41,9 @@ class OsCommandsWrapper
      */
     public function removeDirRecursive(string $dir): void
     {
+        if (!file_exists($dir) || !is_dir($dir)) {
+            return;
+        }
         if ($this->isWindows()) {
             exec(sprintf("rd /s /q %s", escapeshellarg($dir)));
             return;
