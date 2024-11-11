@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-/**
+ /**
  * This allows us to configure the behavior of the "global mock"
  */
 namespace {
@@ -9,7 +10,7 @@ namespace {
     $mockMkdir = false;
 }
 
-/**
+ /**
  * Put mocks of global functions for testing in the namespace of the SUT
  */
 namespace JustMisha\MultiRunner {
@@ -75,31 +76,26 @@ namespace JustMisha\MultiRunner\Tests {
             $this->runtimeFullPath = dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'runtime';
         }
 
-        protected function clearRuntimeFolder(): void
+
+        protected function isWindows(): bool
         {
-            $dir = dirname(__FILE__, 1) . '/runtime';
-            $this->clearFolder($dir);
+            return $this->osCommandsWrapper->isWindows();
         }
 
-        /**
-         * @param string $dir A directory name to clear.
-         * @return void
-         */
-        protected function clearFolder(string $dir): void
+        protected function clearRuntimeFolder(): void
         {
             $this->osCommandsWrapper->clearFolder($this->runtimeFullPath);
         }
 
         /**
-         * Check whether a base folder clear
-         * after destroying BackgroundParallelProcesses
+         * Assert that a folder is empty
          *
-         * @param string $baseFolder
+         * @param string $dir A full path to the folder.
          * @return void
          */
-        protected function assertBaseFolderClear(string $baseFolder): void
+        protected function assertFolderEmpty(string $dir): void
         {
-            $dirIterator = new \FilesystemIterator($baseFolder, \FilesystemIterator::SKIP_DOTS);
+            $dirIterator = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
             $this->assertFalse($dirIterator->valid());
         }
     }

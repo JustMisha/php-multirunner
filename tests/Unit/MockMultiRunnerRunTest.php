@@ -25,7 +25,7 @@ class MockMultiRunnerRunTest extends BaseTestCase
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
         $scriptText = '<?php' . PHP_EOL . 'echo "Hahaha";';
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
 
         for($i = 1; $i <= $totalProcessNums; $i++) {
@@ -34,7 +34,7 @@ class MockMultiRunnerRunTest extends BaseTestCase
         $expectedResult = new ProcessResults(0, 'Hahaha', '');
         $this->testRunner(60, 10, $expectedResult, $runner);
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
         $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
 
@@ -44,7 +44,7 @@ class MockMultiRunnerRunTest extends BaseTestCase
         $expectedResult = new ProcessResults(0, 'Hahaha', '');
         $this->testRunner(60, 10, $expectedResult, $runner);
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
         // Create a mock MultiRunner to pass as an argument.
         $runner = new class() implements MultiRunnerInterface {
@@ -72,7 +72,7 @@ class MockMultiRunnerRunTest extends BaseTestCase
         $expectedResult = new ProcessResults(0, 'Hahaha', '');
         $this->testRunner(60, 10, $expectedResult, $runner);
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
     }
 
     /**

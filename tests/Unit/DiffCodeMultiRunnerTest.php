@@ -23,7 +23,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
      */
     public function testRunPythonAndCmdOrBash(): void
     {
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $timeout = 5;
         $maxParallelProcessNums = 10;
 
@@ -66,7 +66,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
         $this->assertEquals($result, trim($results['python']->stdout));
 
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
     }
 
@@ -109,7 +109,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
 //        $usePipe = true;
 //        $totalProcessNums = 10;
 //        $result= "Hahaha";
-//        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+//        $baseFolder = $this->runtimeFullPath
 //        $interpreter = 'python';
 //        $interpreterArgs = '';
 //        $scriptText = "print('" . $result . "', sep = None, end = '')";
@@ -144,12 +144,12 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
      * Check whether a base folder clear
      * after destroying BackgroundParallelProcesses
      *
-     * @param string $baseFolder
+     * @param string $dir
      * @return void
      */
-    protected function assertBaseFolderClear(string $baseFolder): void
+    protected function assertFolderEmpty(string $dir): void
     {
-        $dirIterator = new \FilesystemIterator($baseFolder, \FilesystemIterator::SKIP_DOTS);
+        $dirIterator = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
         $this->assertFalse($dirIterator->valid());
     }
 

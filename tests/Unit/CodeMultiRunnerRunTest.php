@@ -74,7 +74,7 @@ HEREDOC;
             <?php
             echo "$argv[1]";
             NOWDOC;
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner(5, $scriptText, 'php', [], $baseFolder, null, null);
 
         for($i = 1; $i <= 10; $i++) {
@@ -117,7 +117,7 @@ HEREDOC;
         if (is_null($expectedResult)) {
             $expectedResult = new ProcessResults(0, 'Hahaha', '');
         }
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
 
         for($i = 1; $i <= $totalProcessNums; $i++) {
@@ -132,7 +132,7 @@ HEREDOC;
 
         unset($runner);
 
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
     }
 
     /**
@@ -140,7 +140,7 @@ HEREDOC;
      */
     public function testsRunAndForget(): void
     {
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $testFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR
             . 'proba' . DIRECTORY_SEPARATOR . '_'  . __FUNCTION__ . time();
         if (!file_exists($testFolder)) {
@@ -182,7 +182,7 @@ HEREDOC;
 
         $this->assertCount($maxProcessNums, $files);
 
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
     }
 
@@ -191,7 +191,7 @@ HEREDOC;
      */
     public function testsRunAndForgetWhenProcessOutputLongEcho(): void
     {
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
 
         $sleepTime = 3;
         $scriptText = '<?php' . PHP_EOL . 'sleep(' . $sleepTime . ');' . PHP_EOL .
@@ -207,7 +207,7 @@ HEREDOC;
 
         unset($runner);
 
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
     }
 
@@ -218,7 +218,7 @@ HEREDOC;
         $totalProcessNums = 100;
         $result = 'Hahaha';
 
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner($maxParallelProcessNums, '<?php' . PHP_EOL . 'echo "Hahaha";', 'php', [], $baseFolder, null, null);
 
         for($i = 1; $i <= $totalProcessNums; $i++) {
@@ -236,7 +236,7 @@ HEREDOC;
         $this->assertEquals($expectedResult, $results[1]);
         $this->assertEquals($expectedResult, $results[$resultsNumberToAwait]);
 
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
     }
 
     public function testRunWithoutBaseFolderAndWaitSeveralResultsOnly(): void
@@ -273,7 +273,7 @@ HEREDOC;
      */
     public function testRunCmdOrBash(): void
     {
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $timeout = 10;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
@@ -304,7 +304,7 @@ HEREDOC;
         $this->assertEquals($result, trim($results[$totalProcessNums]->stdout));
 
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
     }
 
@@ -318,7 +318,7 @@ HEREDOC;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
         $result= "Hahaha";
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $interpreter = 'python';
         $interpreterArgs = [];
         $scriptText = "print('" . $result . "', sep = None, end = '')";
@@ -348,7 +348,7 @@ HEREDOC;
         $this->assertEquals($expectedResult, $results[(string)$totalProcessNums]);
 
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
     }
 
@@ -363,7 +363,7 @@ HEREDOC;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
         $result= "Hahaha";
-        $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
+        $baseFolder = $this->runtimeFullPath;
         $interpreter = 'node';
         $interpreterArgs = [];
         $scriptText = "process.stdout.write('" . $result . "')";
@@ -392,7 +392,7 @@ HEREDOC;
         $this->assertEquals($expectedResult, $results[(string)$totalProcessNums]);
 
         unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
 
     }
 }
