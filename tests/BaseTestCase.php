@@ -48,17 +48,31 @@ namespace JustMisha\MultiRunner {
 
 namespace JustMisha\MultiRunner\Tests {
 
+    use JustMisha\MultiRunner\Helpers\OsCommandsWrapper;
+
     class BaseTestCase extends \PHPUnit\Framework\TestCase
     {
 
         public const MAX_PARALLEL_PROCESSES = 100;
 
-        protected function isWindows(): bool
+        protected string $runtimeFullPath;
+
+        protected OsCommandsWrapper $osCommandsWrapper;
+
+        public function __construct(
+            ?string $name = null,
+            array $data = [],
+            $dataName = '',
+            OsCommandsWrapper $osCommandsWrapper = null
+        )
         {
-            if (PHP_OS == 'WINNT' || PHP_OS == 'WIN32') {
-                return true;
+            parent::__construct($name, $data, $dataName);
+            if ($osCommandsWrapper) {
+                $this->osCommandsWrapper = $osCommandsWrapper;
+            } else {
+                $this->osCommandsWrapper = new OsCommandsWrapper();
             }
-            return false;
+            $this->runtimeFullPath = dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'runtime';
         }
 
         protected function clearRuntimeFolder(): void
@@ -73,13 +87,7 @@ namespace JustMisha\MultiRunner\Tests {
          */
         protected function clearFolder(string $dir): void
         {
-            if (file_exists($dir)) {
-                if ($this->isWindows()) {
-                    exec(sprintf("rd /s /q %s", escapeshellarg($dir)));
-                } else {
-                    exec(sprintf("rm -rf %s", escapeshellarg($dir)));
-                }
-            }
+            $this->osCommandsWrapper->clearFolder($this->runtimeFullPath);
         }
 
         /**
