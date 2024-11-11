@@ -1,58 +1,70 @@
 <?php
 
-namespace JustMisha\MultiRunner\Tests\Unit;
+/**
+ * class MockMultiRunnerRunTest
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
 
+namespace JustMisha\MultiRunner\Tests\Unit;
 
 use JustMisha\MultiRunner\CodeMultiRunner;
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\MultiRunnerInterface;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
-
 class MockMultiRunnerRunTest extends BaseTestCase
 {
-    protected function setUp(): void
-    {
-        global $mockMkdir;
-        $mockMkdir = false;
-        global $mockFilePutContents;
-        $mockFilePutContents = false;
-        $this->clearRuntimeFolder();
-    }
-
     public function testWeCanUseMultiRunnerInterfaceForMocking(): void
     {
-        $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
-        $scriptText = '<?php' . PHP_EOL . 'echo "Hahaha";';
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
-        $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
 
-        for($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i, (string)$i);
-        }
         $expectedResult = new ProcessResults(0, 'Hahaha', '');
-        $this->testRunner(60, 10, $expectedResult, $runner);
+
+        $runner = $this->createMockRunnerImplementingMultiRunnerInterface($totalProcessNums, $expectedResult);
+
+        $timeout = 1;
+        $results = $runner->runAndWaitForResults($timeout);
+
+        $this->assertCount(($totalProcessNums), $results);
+        $this->assertEquals($expectedResult, $results["1"]);
+        $this->assertEquals($expectedResult, $results[(string)$totalProcessNums]);
+
         unset($runner);
+
         $this->assertBaseFolderClear($baseFolder);
+    }
 
-        $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
+    /**
+     * Create a mock MultiRunner to pass as an argument.
+     *
+     * @param integer $totalProcessNums
+     * @param ProcessResults $expectedResult
+     * @return MultiRunnerInterface
+     */
+    protected function createMockRunnerImplementingMultiRunnerInterface(
+        int $totalProcessNums,
+        ProcessResults $expectedResult
+    ): MultiRunnerInterface
+    {
+        return new class ($totalProcessNums, $expectedResult) implements MultiRunnerInterface
+        {
+            private ProcessResults $expectedResult;
+            private int $totalProcessNums;
 
-        for($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i, (string)$i);
-        }
-        $expectedResult = new ProcessResults(0, 'Hahaha', '');
-        $this->testRunner(60, 10, $expectedResult, $runner);
-        unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
+            public function __construct(int $totalProcessNums, ProcessResults $expectedResult)
+            {
+                $this->expectedResult = $expectedResult;
+                $this->totalProcessNums = $totalProcessNums;
+            }
 
-        // Create a mock MultiRunner to pass as an argument.
-        $runner = new class() implements MultiRunnerInterface {
             public function runAndWaitForResults(int $waitTime): array
             {
                 $array = [];
-                for ($i = 1; $i < 11; $i++) {
-                    $array[$i] = new ProcessResults(0, 'Hahaha', '');
+                for ($i = 1; $i <= $this->totalProcessNums; $i++) {
+                    $array["". $i] = $this->expectedResult;
                 }
                 return $array;
             }
@@ -66,36 +78,6 @@ class MockMultiRunnerRunTest extends BaseTestCase
             {
                 return [];
             }
-
         };
-
-        $expectedResult = new ProcessResults(0, 'Hahaha', '');
-        $this->testRunner(60, 10, $expectedResult, $runner);
-        unset($runner);
-        $this->assertBaseFolderClear($baseFolder);
-    }
-
-    /**
-     * @param int $timeout
-     * @param int $totalProcessNums
-     * @param ProcessResults $expectedResult
-     * @throws \Exception
-     */
-    private function testRunner(
-        int $timeout,
-        int $totalProcessNums,
-        ProcessResults $expectedResult = null,
-        MultiRunnerInterface $runner
-    ): void
-    {
-        if (is_null($expectedResult)) {
-            $expectedResult = new ProcessResults(0, 'Hahaha', '');
-        }
-
-        $results = $runner->runAndWaitForResults($timeout);
-
-        $this->assertCount(($totalProcessNums), $results);
-        $this->assertEquals($expectedResult, $results[1]);
-        $this->assertEquals($expectedResult, $results[$totalProcessNums]);
     }
 }
