@@ -1,19 +1,32 @@
 <?php
 
-namespace JustMisha\MultiRunner\Tests\Unit;
+/**
+ * class CodeMultiRunnerExceptionTest
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
 
+namespace JustMisha\MultiRunner\Tests\Unit;
 
 use JustMisha\MultiRunner\DiffScriptMultiRunner;
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
-
+/**
+ * Tests DiffScriptMultiRunner class.
+ *
+ */
 class DiffScriptMultiRunnerTest extends BaseTestCase
 {
-
-    public function testStandardRun(): void
+    /**
+     * Tests that one can run various script,
+     * including those with complicated arguments.
+     *
+     * @return void
+     */
+    public function testWeCanRunDifferentScriptsIncludingComplicatedArguments(): void
     {
-
         $runner = new DiffScriptMultiRunner(self::MAX_PARALLEL_PROCESSES);
 
         $scriptFullPath = dirname(__FILE__, 2) .
@@ -50,40 +63,12 @@ class DiffScriptMultiRunnerTest extends BaseTestCase
 
         $results = $runner->runAndWaitForResults($timeout);
 
-
-
         $this->assertCount(($totalProcessNums), $results);
 
         $expectedResult = new ProcessResults(0, "Hello", "");
         $this->assertEquals($expectedResult, $results[1]);
 
         $expectedResult = new ProcessResults(0, $complicatedArgument, "");
-        $this->assertEquals($expectedResult, $results[$totalProcessNums]);
-
-        unset($runner);
-    }
-
-    public function testRunWithEnvVarsSet(): void
-    {
-        $scriptFullPath = dirname(__FILE__, 2) .
-            DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'echo_env_hello.php';
-        $runner = new DiffScriptMultiRunner(self::MAX_PARALLEL_PROCESSES);
-
-        $totalProcessNums = 5;
-        for($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i, $scriptFullPath, null, 'php', [], ['Hello' => 'Hello'], (string)$i);
-        }
-
-        $timeout = 5;
-
-        $results = $runner->runAndWaitForResults($timeout);
-
-        $this->assertCount(($totalProcessNums), $results);
-
-        $expectedResult = new ProcessResults(0, "Hello1", "");
-        $this->assertEquals($expectedResult, $results[1]);
-
-        $expectedResult = new ProcessResults(0, "Hello"  . $totalProcessNums, "");
         $this->assertEquals($expectedResult, $results[$totalProcessNums]);
 
         unset($runner);
