@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-/**
+ /**
  * This allows us to configure the behavior of the "global mock"
  */
 namespace {
@@ -9,7 +10,7 @@ namespace {
     $mockMkdir = false;
 }
 
-/**
+ /**
  * Put mocks of global functions for testing in the namespace of the SUT
  */
 namespace JustMisha\MultiRunner {
@@ -48,50 +49,53 @@ namespace JustMisha\MultiRunner {
 
 namespace JustMisha\MultiRunner\Tests {
 
+    use JustMisha\MultiRunner\Helpers\OsCommandsWrapper;
+
     class BaseTestCase extends \PHPUnit\Framework\TestCase
     {
 
         public const MAX_PARALLEL_PROCESSES = 100;
 
+        protected string $runtimeFullPath;
+
+        protected OsCommandsWrapper $osCommandsWrapper;
+
+        public function __construct(
+            ?string $name = null,
+            array $data = [],
+            $dataName = '',
+            OsCommandsWrapper $osCommandsWrapper = null
+        )
+        {
+            parent::__construct($name, $data, $dataName);
+            if ($osCommandsWrapper) {
+                $this->osCommandsWrapper = $osCommandsWrapper;
+            } else {
+                $this->osCommandsWrapper = new OsCommandsWrapper();
+            }
+            $this->runtimeFullPath = dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'runtime';
+        }
+
+
         protected function isWindows(): bool
         {
-            if (PHP_OS == 'WINNT' || PHP_OS == 'WIN32') {
-                return true;
-            }
-            return false;
+            return $this->osCommandsWrapper->isWindows();
         }
 
         protected function clearRuntimeFolder(): void
         {
-            $dir = dirname(__FILE__, 1) . '/runtime';
-            $this->clearFolder($dir);
+            $this->osCommandsWrapper->clearFolder($this->runtimeFullPath);
         }
 
         /**
-         * @param string $dir
-         * @return void
-         */
-        protected function clearFolder(string $dir): void
-        {
-            if (file_exists($dir)) {
-                if ($this->isWindows()) {
-                    exec(sprintf("rd /s /q %s", escapeshellarg($dir)));
-                } else {
-                    exec(sprintf("rm -rf %s", escapeshellarg($dir)));
-                }
-            }
-        }
-
-        /**
-         * Check whether a base folder clear
-         * after destroying BackgroundParallelProcesses
+         * Assert that a folder is empty
          *
-         * @param string $baseFolder
+         * @param string $dir A full path to the folder.
          * @return void
          */
-        protected function assertBaseFolderClear(string $baseFolder): void
+        protected function assertFolderEmpty(string $dir): void
         {
-            $dirIterator = new \FilesystemIterator($baseFolder, \FilesystemIterator::SKIP_DOTS);
+            $dirIterator = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
             $this->assertFalse($dirIterator->valid());
         }
     }

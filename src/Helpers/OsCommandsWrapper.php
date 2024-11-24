@@ -10,7 +10,10 @@
 namespace JustMisha\MultiRunner\Helpers;
 
 use Error;
+use FilesystemIterator;
 use InvalidArgumentException;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RuntimeException;
 
 /**
@@ -41,6 +44,9 @@ class OsCommandsWrapper
      */
     public function removeDirRecursive(string $dir): void
     {
+        if (!file_exists($dir) || !is_dir($dir)) {
+            return;
+        }
         if ($this->isWindows()) {
             exec(sprintf("rd /s /q %s", escapeshellarg($dir)));
             return;
@@ -67,28 +73,6 @@ class OsCommandsWrapper
         }
         exec('which -a ' . $program . ' 1>/dev/null 2>&1', $output, $exitCode);
         return $exitCode;
-    }
-
-    /**
-     * Inserts quotation marks around the special characters
-     * in $argument.
-     *
-     * You must use quotation marks around the following special characters:
-     * & < > [ ] | { } ^ = ; ! ' + , ` ~ [white space].
-     * (from {@link https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd})
-     *
-     * @param string $argument A string for quotation.
-     * @return string
-     * @psalm-api
-     */
-    public function quoteArgumentForWinCmd(string $argument): string
-    {
-        $charsToEscape = str_split("&()[]{}^=;!'+,`~ ");
-        $argumentArray = str_split($argument);
-        if (array_intersect($charsToEscape, $argumentArray)) {
-            return '"' . $argument . '"';
-        }
-        return $argument;
     }
 
     /**
@@ -198,5 +182,30 @@ class OsCommandsWrapper
             throw new RuntimeException("There was error while escaping string " . $value);
         }
         return $result;
+    }
+
+
+    /**
+     * Empty the contents of the folder.
+     *
+     * @param string $folder A full path to the folder to empty.
+     * @return void
+     */
+    public function clearFolder(string $folder): void
+    {
+        if (!file_exists($folder) || !is_dir($folder)) {
+            return;
+        }
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($files as $file) {
+            if ($file->isDir() === true) {
+                rmdir($file->getPathName());
+            } elseif (($file->isFile() === true) || ($file->isLink() === true)) {
+                unlink($file->getPathname());
+            }
+        }
     }
 }
