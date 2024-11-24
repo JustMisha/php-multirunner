@@ -55,6 +55,8 @@ namespace JustMisha\MultiRunner\Tests {
     {
         public const MAX_PARALLEL_PROCESSES = 100;
 
+        public const TMP_DIR_NAME = 'tmp';
+
         protected string $runtimeFullPath;
 
         protected OsCommandsWrapper $osCommandsWrapper;
@@ -75,6 +77,19 @@ namespace JustMisha\MultiRunner\Tests {
             $this->runtimeFullPath = dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'runtime';
         }
 
+        protected function setUp(): void
+        {
+            $this->clearRuntimeFolder();
+            $this->clearTmpFolder();
+        }
+
+        protected function tearDown(): void
+        {
+            $this->clearRuntimeFolder();
+            $this->clearTmpFolder();
+        }
+
+
         protected function isWindows(): bool
         {
             return $this->osCommandsWrapper->isWindows();
@@ -83,6 +98,15 @@ namespace JustMisha\MultiRunner\Tests {
         protected function clearRuntimeFolder(): void
         {
             $this->osCommandsWrapper->clearFolder($this->runtimeFullPath);
+        }
+
+        protected function clearTmpFolder(): void
+        {
+            $this->osCommandsWrapper->clearFolder(
+                dirname(__FILE__, 1) .
+                DIRECTORY_SEPARATOR .
+                self::TMP_DIR_NAME
+            );
         }
 
         /**
