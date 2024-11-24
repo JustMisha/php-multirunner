@@ -205,11 +205,11 @@ class ScriptMultiRunnerTest extends BaseTestCase
     {
         $complicatedArgument = 'String with "C:\\quotes\\" or malicious %OS% (&()[]{}^=;!\'+,`~) stuff \\';
         $complicatedArgument .= '&()[]{}^=;!\'+,`~';
-        $testDir = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR .
-            'proba' .  DIRECTORY_SEPARATOR . 'complicatedArguments';
-        if (!file_exists($testDir)) {
+        $tmpDir = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR .
+            self::TMP_DIR_NAME .  DIRECTORY_SEPARATOR . 'complicatedArguments';
+        if (!file_exists($tmpDir)) {
             $oldMask = umask();
-            mkdir($testDir, 0777, true);
+            mkdir($tmpDir, 0777, true);
             umask($oldMask);
         }
 
@@ -233,10 +233,10 @@ class ScriptMultiRunnerTest extends BaseTestCase
 
         sleep($programRunningTime * 2);
 
-        $fileContents1 = file_get_contents($testDir . DIRECTORY_SEPARATOR . '1');
-        $fileContents5 = file_get_contents($testDir . DIRECTORY_SEPARATOR . '5');
+        $fileContents1 = file_get_contents($tmpDir . DIRECTORY_SEPARATOR . '1');
+        $fileContents5 = file_get_contents($tmpDir . DIRECTORY_SEPARATOR . '5');
 
-        $this->osCommandsWrapper->removeDirRecursive($testDir);
+        $this->osCommandsWrapper->removeDirRecursive($tmpDir);
 
 
         $this->assertEquals($complicatedArgument, $fileContents1);

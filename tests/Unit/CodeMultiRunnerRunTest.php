@@ -31,7 +31,7 @@ class CodeMultiRunnerRunTest extends BaseTestCase
         $mockMkdir = false;
         global $mockFilePutContents;
         $mockFilePutContents = false;
-        $this->clearRuntimeFolder();
+        parent::setUp();
     }
 
     /**
@@ -282,14 +282,14 @@ HEREDOC;
     public function testsRunAndForgetWorks(): void
     {
         $baseFolder = $this->runtimeFullPath;
-        $testFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR
-            . 'proba' . DIRECTORY_SEPARATOR . '_'  . __FUNCTION__ . time();
-        if (!file_exists($testFolder)) {
-            mkdir($testFolder, 0777, true);
+        $tmpFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR
+            . self::TMP_DIR_NAME . DIRECTORY_SEPARATOR . '_'  . __FUNCTION__ . time();
+        if (!file_exists($tmpFolder)) {
+            mkdir($tmpFolder, 0777, true);
         }
         $sleepTime = 3;
         $scriptText = '<?php' . PHP_EOL . 'sleep(' . $sleepTime . ');' . PHP_EOL .
-            "file_put_contents('" . $testFolder . '\' . DIRECTORY_SEPARATOR . $argv[1], $argv[1]);' . PHP_EOL;
+            "file_put_contents('" . $tmpFolder . '\' . DIRECTORY_SEPARATOR . $argv[1], $argv[1]);' . PHP_EOL;
 
         $runner = new CodeMultiRunner(
             self::MAX_PARALLEL_PROCESSES,
@@ -316,9 +316,9 @@ HEREDOC;
 
         sleep($sleepTime + $timeReserve);
 
-        $scandirResult = scandir($testFolder);
+        $scandirResult = scandir($tmpFolder);
         if ($scandirResult === false) {
-            throw new Exception("Scandir for $testFolder return false.");
+            throw new Exception("Scandir for $tmpFolder return false.");
         }
 
         $files = array_diff($scandirResult, array('..', '.'));
@@ -326,9 +326,9 @@ HEREDOC;
 
         // Post-test cleaning.
         foreach ($files as $file) {
-            unlink($testFolder . DIRECTORY_SEPARATOR . $file);
+            unlink($tmpFolder . DIRECTORY_SEPARATOR . $file);
         }
-        rmdir($testFolder);
+        rmdir($tmpFolder);
         unset($runner);
 
         $this->assertFolderEmpty($baseFolder);

@@ -14,7 +14,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
         $mockMkdir = false;
         global $mockFilePutContents;
         $mockFilePutContents = false;
-        $this->clearRuntimeFolder();
+        parent::setUp();
     }
 
     /**
