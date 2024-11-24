@@ -53,7 +53,6 @@ namespace JustMisha\MultiRunner\Tests {
 
     class BaseTestCase extends \PHPUnit\Framework\TestCase
     {
-
         public const MAX_PARALLEL_PROCESSES = 100;
 
         protected string $runtimeFullPath;
@@ -75,7 +74,6 @@ namespace JustMisha\MultiRunner\Tests {
             }
             $this->runtimeFullPath = dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'runtime';
         }
-
 
         protected function isWindows(): bool
         {
