@@ -34,7 +34,7 @@ class MockMultiRunnerRunTest extends BaseTestCase
 
         unset($runner);
 
-        $this->assertBaseFolderClear($baseFolder);
+        $this->assertFolderEmpty($baseFolder);
     }
 
     /**
