@@ -1,15 +1,32 @@
 <?php
 
+/**
+ * class ScriptMultiRunnerTest
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
+
 namespace JustMisha\MultiRunner\Tests\Unit;
 
-use JustMisha\MultiRunner\DiffScriptMultiRunner;
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\ScriptMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
+/**
+ * Tests ScriptMultiRunner class.
+ *
+ */
 class ScriptMultiRunnerTest extends BaseTestCase
 {
-    public function testStandardRun(): void
+    /**
+     * Tests that we can run multiple processes
+     * of the same script simultaneously,
+     * when the script is running without delay.
+     *
+     * @return void
+     */
+    public function testRunMultipleProcessesOfScriptWhenScriptRunsWithoutDelay(): void
     {
         $scriptFullPath = dirname(__FILE__, 2) .
             DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'echo_hello.php';
@@ -33,7 +50,14 @@ class ScriptMultiRunnerTest extends BaseTestCase
         unset($runner);
     }
 
-    public function testRunWhenDelay(): void
+    /**
+     * Tests that we can run multiple processes
+     * of the same script simultaneously,
+     * when the script is running with delay.
+     *
+     * @return void
+     */
+    public function testRunMultipleProcessesOfScriptWhenScriptRunsWithDelay(): void
     {
         $scriptFullPath = dirname(__FILE__, 2) .
             DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'sleep_3_sec_and_echo_hello.php';
@@ -61,7 +85,14 @@ class ScriptMultiRunnerTest extends BaseTestCase
         unset($runner);
     }
 
-    public function testRunCmdOrBashWithoutDelay(): void
+    /**
+     * Tests that we can run multiple processes
+     * of the same cmd or bash script simultaneously,
+     * when the script is running without delay.
+     *
+     * @return void
+     */
+    public function testRunMultipleProcessesOfCmdOrBashWhenScriptRunsWithoutDelay(): void
     {
         if ($this->isWindows()) {
             $scriptFullPath = dirname(__FILE__, 2) .
@@ -93,11 +124,14 @@ class ScriptMultiRunnerTest extends BaseTestCase
     }
 
     /**
+     * Tests that we can run multiple processes
+     * of the same python script simultaneously,
+     * when the script is running without delay.
+     *
      * @group python
      * @return void
-     * @throws \Exception
      */
-    public function testRunPythonWithoutDelay(): void
+    public function testRunMultipleProcessesOfPythonScriptWhenScriptRunsWithoutDelay(): void
     {
         $scriptFullPath = dirname(__FILE__, 2) .
             DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'print_hello.py';
@@ -128,7 +162,16 @@ class ScriptMultiRunnerTest extends BaseTestCase
         unset($runner);
     }
 
-    public function testRunWithDelayAndComplicatedArgument(): void
+    /**
+     * Tests that we can run multiple processes
+     * of the same script simultaneously,
+     * when the script is running with delay
+     * and with complicated arguments.
+     *
+     * @group python
+     * @return void
+     */
+    public function testRunMultipleProcessesOfScriptWhenScriptRunsWithDelayAndComplicatedArgument(): void
     {
         $complicatedArgument = 'String with "C:\\quotes\\" or malicious %OS% (&()[]{}^=;!\'+,`~) stuff \\';
         $complicatedArgument .= '&()[]{}^=;!\'+,`~';
@@ -231,11 +274,18 @@ class ScriptMultiRunnerTest extends BaseTestCase
     {
         $scriptFullPath = dirname(__FILE__, 2) .
             DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'echo_env_hello.php';
-        $runner = new DiffScriptMultiRunner(self::MAX_PARALLEL_PROCESSES);
+        $runner = new ScriptMultiRunner(
+            self::MAX_PARALLEL_PROCESSES,
+            $scriptFullPath,
+            null,
+            'php',
+            [],
+            ['Hello' => 'Hello']
+        );
 
         $totalProcessNums = 5;
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i, $scriptFullPath, null, 'php', [], ['Hello' => 'Hello'], (string)$i);
+            $runner->addProcess((string)$i, (string)$i);
         }
 
         $timeout = 5;
