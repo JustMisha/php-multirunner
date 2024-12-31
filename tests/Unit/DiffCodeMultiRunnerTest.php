@@ -1,13 +1,30 @@
 <?php
 
+/**
+ * MultiRunner test classes: DiffCodeMultiRunnerTest class.
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
+
 namespace JustMisha\MultiRunner\Tests\Unit;
 
 use Exception;
 use JustMisha\MultiRunner\DiffCodeMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
+use Throwable;
 
+/**
+ * Tests multiple running instances of different codes simultaneously.
+ *
+ */
 class DiffCodeMultiRunnerTest extends BaseTestCase
 {
+    /**
+     * Setup of global variables before each test.
+     *
+     * @return void
+     */
     protected function setUp(): void
     {
         global $mockMkdir;
@@ -30,7 +47,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
         $timeout = 5;
         $maxParallelProcessNums = 10;
 
-        $result = 'Hahaha';
+        $result = 'Hello world!';
         $interpreterArgs = [];
 
         if ($this->isWindows()) {
@@ -53,7 +70,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
 
         try {
             $runner->addProcess('python', $scriptText, $interpreter, [], null);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             if ($t->getMessage() === 'Interpreter python not found') {
                 echo PHP_EOL;
                 echo 'Interpreter python not found. Skip the test.' . PHP_EOL;
