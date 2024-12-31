@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MultiRunner final class: CodeMultiRunner class
+ * MultiRunner test classes: CodeMultiRunnerRunTest class.
  *
  * @package JustMisha\MultiRunner
  * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
@@ -13,6 +13,7 @@ use Exception;
 use JustMisha\MultiRunner\CodeMultiRunner;
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
+use Throwable;
 
 /**
  * Tests multiple running instances of a code simultaneously.
@@ -44,11 +45,18 @@ class CodeMultiRunnerRunTest extends BaseTestCase
         $this->runAndWaitForResultsTest(60, 20, 10);
     }
 
+    /**
+     * @return void
+     */
     public function testRunAndWaitForResultsWorksWhenMaxProcessLimitLessThenLaunchedProcesses(): void
     {
-        $this->runAndWaitForResultsTest(60, 5, 10, '<?php echo "Hahaha";');
+        $this->runAndWaitForResultsTest(60, 5, 10, '<?php echo "Hello!";');
     }
 
+    /**
+     * @return void
+     * @throws Exception If we cannot read contents of $fileFullPathWithLongContents.
+     */
     public function testRunAndWaitForResultsWorksWithLongEcho(): void
     {
         $fileFullPathWithLongContents = dirname(__FILE__, 2) . '/fixtures/longecho.txt';
@@ -66,6 +74,9 @@ class CodeMultiRunnerRunTest extends BaseTestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testRunAndWaitForResultsWorksWithVeryLongEcho(): void
     {
         $result = str_repeat("a", 1000000);
@@ -80,6 +91,9 @@ class CodeMultiRunnerRunTest extends BaseTestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testRunAndWaitForResultsWorksWhenVeryLongEchoWithPause(): void
     {
         $symbolsNumbers = 1000000;
@@ -95,6 +109,9 @@ HEREDOC;
         $this->runAndWaitForResultsTest(30, 5, 5, $scriptText, $expectedResult);
     }
 
+    /**
+     * @return void
+     */
     public function testRunAndWaitForResultsWorksWhenEchoArgs(): void
     {
 
@@ -105,29 +122,31 @@ HEREDOC;
         $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner(5, $scriptText, 'php', [], $baseFolder, null, null);
 
-        for($i = 1; $i <= 10; $i++) {
-            $runner->addProcess((string)$i, (string)$i);
+        for ($i = 1; $i <= 10; $i++) {
+            $runner->addProcess('string' . $i, (string)$i);
         }
 
         $results = $runner->runAndWaitForResults(5);
 
 
         $expectedResult = new ProcessResults(0, "1", "");
-        $this->assertEquals($expectedResult, $results[1]);
+        $this->assertEquals($expectedResult, $results['string' . 1]);
 
         $expectedResult = new ProcessResults(0, "10", "");
-        $this->assertEquals($expectedResult, $results[10]);
-
-    }
-
-    public function testRunAndWaitForResultsThroughExceptionIfTimeout(): void
-    {
-        $this->expectExceptionMessage('Timeout: current time');
-        $this->runAndWaitForResultsTest(1, 5, 1000, '<?php echo "Hahaha";');
+        $this->assertEquals($expectedResult, $results['string' . 10]);
     }
 
     /**
-     * @throws Exception
+     * @return void
+     */
+    public function testRunAndWaitForResultsThroughExceptionIfTimeout(): void
+    {
+        $this->expectExceptionMessage('Timeout: current time');
+        $this->runAndWaitForResultsTest(1, 5, 1000, '<?php echo "Hello!";');
+    }
+
+    /**
+     * @return void
      */
     public function testRunAndWaitForResultsWorksWhenCmdOrBashInterpreter(): void
     {
@@ -135,7 +154,7 @@ HEREDOC;
         $timeout = 10;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
-        $result = 'Hahaha';
+        $result = 'Hello';
         if ($this->isWindows()) {
             $interpreter = 'cmd';
             $interpreterArgs = ['/c'];
@@ -158,16 +177,16 @@ HEREDOC;
         );
 
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i);
+            $runner->addProcess('string' . $i);
         }
 
         $results = $runner->runAndWaitForResults($timeout);
 
         $this->assertCount(($totalProcessNums), $results);
 
-        $this->assertEquals($result, trim($results[1]->stdout));
+        $this->assertEquals($result, trim($results['string' . 1]->stdout));
 
-        $this->assertEquals($result, trim($results[$totalProcessNums]->stdout));
+        $this->assertEquals($result, trim($results['string' . $totalProcessNums]->stdout));
 
         unset($runner);
         $this->assertFolderEmpty($baseFolder);
@@ -175,14 +194,15 @@ HEREDOC;
 
     /**
      * @group python
-     * @throws Exception
+     * @return void
+     * @throws Throwable If interpreter python not found.
      */
     public function testRunAndWaitForResultsWorksWhenThePythonInterpreter(): void
     {
         $timeout = 10;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
-        $result = "Hahaha";
+        $result = "Hello";
         $baseFolder = $this->runtimeFullPath;
         $interpreter = 'python';
         $interpreterArgs = [];
@@ -199,7 +219,7 @@ HEREDOC;
                 $envVars,
                 null
             );
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             if ($t->getMessage() === 'Interpreter python not found') {
                 echo PHP_EOL;
                 echo 'Interpreter python not found. Skip the test.' . PHP_EOL;
@@ -209,7 +229,7 @@ HEREDOC;
         }
 
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i);
+            $runner->addProcess('string' . $i);
         }
 
         $results = $runner->runAndWaitForResults($timeout);
@@ -217,24 +237,23 @@ HEREDOC;
         $expectedResult = new ProcessResults(0, $result, "");
 
         $this->assertCount($totalProcessNums, $results);
-        $this->assertEquals($expectedResult, $results["1"]);
-        $this->assertEquals($expectedResult, $results[(string)$totalProcessNums]);
+        $this->assertEquals($expectedResult, $results['string' . "1"]);
+        $this->assertEquals($expectedResult, $results['string' . $totalProcessNums]);
 
         unset($runner);
         $this->assertFolderEmpty($baseFolder);
     }
 
     /**
-     * @group node
      * @return void
-     * @throws \ErrorException
+     * @throws Throwable If interpreter node not found.
      */
     public function testRunAndWaitForResultsWorksWhenTheNodeInterpreter(): void
     {
         $timeout = 10;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 10;
-        $result = "Hahaha";
+        $result = "Hello";
         $baseFolder = $this->runtimeFullPath;
         $interpreter = 'node';
         $interpreterArgs = [];
@@ -250,7 +269,7 @@ HEREDOC;
                 $envVars,
                 null
             );
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             if ($t->getMessage() === 'Interpreter node not found') {
                 echo PHP_EOL;
                 echo 'Interpreter node not found. Skip the test.' . PHP_EOL;
@@ -260,7 +279,7 @@ HEREDOC;
         }
 
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i);
+            $runner->addProcess('string' . $i);
         }
 
         $results = $runner->runAndWaitForResults($timeout);
@@ -268,16 +287,16 @@ HEREDOC;
         $expectedResult = new ProcessResults(0, $result, "");
 
         $this->assertCount($totalProcessNums, $results);
-        $this->assertEquals($expectedResult, $results['1']);
-        $this->assertEquals($expectedResult, $results[(string)$totalProcessNums]);
+        $this->assertEquals($expectedResult, $results['string' . '1']);
+        $this->assertEquals($expectedResult, $results['string' . $totalProcessNums]);
 
         unset($runner);
         $this->assertFolderEmpty($baseFolder);
-
     }
 
     /**
-     * @throws Exception
+     * @return void
+     * @throws Exception If scandir for $tmpFolder return false.
      */
     public function testsRunAndForgetWorks(): void
     {
@@ -335,7 +354,7 @@ HEREDOC;
     }
 
     /**
-     * @throws Exception
+     * @return void
      */
     public function testsRunAndForgetWorksWhenProcessOutputLongEcho(): void
     {
@@ -367,17 +386,20 @@ HEREDOC;
         $this->assertFolderEmpty($baseFolder);
     }
 
+    /**
+     * @return void
+     */
     public function testRunAndWaitForTheFirstNthResultsWorks(): void
     {
         $timeout = 10;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 100;
-        $result = 'Hahaha';
+        $result = 'Hello!';
 
         $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner(
             $maxParallelProcessNums,
-            '<?php' . PHP_EOL . 'echo "Hahaha";',
+            '<?php' . PHP_EOL . 'echo "Hello!";',
             'php',
             [],
             $baseFolder,
@@ -386,7 +408,7 @@ HEREDOC;
         );
 
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i);
+            $runner->addProcess('string' . $i);
         }
 
         $resultsNumberToAwait = 10; // = $maxParallelProcesses which is a minimum chunk
@@ -397,23 +419,26 @@ HEREDOC;
         unset($runner);
 
         $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
-        $this->assertEquals($expectedResult, $results[1]);
-        $this->assertEquals($expectedResult, $results[$resultsNumberToAwait]);
+        $this->assertEquals($expectedResult, $results['string' . 1]);
+        $this->assertEquals($expectedResult, $results['string' . $resultsNumberToAwait]);
 
         $this->assertFolderEmpty($baseFolder);
     }
 
+    /**
+     * @return void
+     */
     public function testRunAndWaitForTheFirstNthResultsWorksWithoutBaseFolder(): void
     {
         $timeout = 10;
         $maxParallelProcessNums = 10;
         $totalProcessNums = 100;
-        $result = 'Hahaha';
+        $result = 'Hello!';
 
         $baseFolder = null;
         $runner = new CodeMultiRunner(
             $maxParallelProcessNums,
-            '<?php' . PHP_EOL . 'echo "Hahaha";',
+            '<?php' . PHP_EOL . 'echo "Hello!";',
             'php',
             [],
             $baseFolder,
@@ -422,7 +447,7 @@ HEREDOC;
         );
 
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i);
+            $runner->addProcess('string' . $i);
         }
 
         $resultsNumberToAwait = 10; // = $maxParallelProcesses which is a minimum chunk
@@ -434,41 +459,43 @@ HEREDOC;
         unset($runner);
 
         $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
-        $this->assertEquals($expectedResult, $results[1]);
-        $this->assertEquals($expectedResult, $results[$resultsNumberToAwait]);
+        $this->assertEquals($expectedResult, $results['string' . 1]);
+        $this->assertEquals($expectedResult, $results['string' . $resultsNumberToAwait]);
     }
 
     /**
-     * @param int $timeout
-     * @param int $maxParallelProcessNums
-     * @param int $totalProcessNums
-     * @param string $scriptText
-     * @param ProcessResults|null $expectedResult
+     * The helper method for executing
+     * the CodeMultiRunner->runAndWaitForResults method in tests.
+     *
+     * @param integer $timeout Seconds to wait for results.
+     * @param integer $maxParallelProcessNums Maximum number of parallel processes.
+     * @param integer $totalProcessNums Total number of running processes.
+     * @param string $scriptText The text of the script to run.
+     * @param ProcessResults|null $expectedResult An expected result object.
      * @return void
      */
     private function runAndWaitForResultsTest(
         int $timeout,
         int $maxParallelProcessNums,
         int $totalProcessNums = 10,
-        string $scriptText = '<?php' . PHP_EOL . 'echo "Hahaha";',
+        string $scriptText = '<?php' . PHP_EOL . 'echo "Hello!";',
         ProcessResults $expectedResult = null
-    ): void
-    {
+    ): void {
         if (is_null($expectedResult)) {
-            $expectedResult = new ProcessResults(0, 'Hahaha', '');
+            $expectedResult = new ProcessResults(0, 'Hello!', '');
         }
         $baseFolder = $this->runtimeFullPath;
         $runner = new CodeMultiRunner($maxParallelProcessNums, $scriptText, 'php', [], $baseFolder, null, null);
 
         for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess((string)$i, (string)$i);
+            $runner->addProcess('string' . $i, (string)$i);
         }
 
         $results = $runner->runAndWaitForResults($timeout);
 
         $this->assertCount(($totalProcessNums), $results);
-        $this->assertEquals($expectedResult, $results["1"]);
-        $this->assertEquals($expectedResult, $results[$totalProcessNums]);
+        $this->assertEquals($expectedResult, $results['string1']);
+        $this->assertEquals($expectedResult, $results['string' . $totalProcessNums]);
 
         unset($runner);
 
