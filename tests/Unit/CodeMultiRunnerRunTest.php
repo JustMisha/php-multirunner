@@ -128,7 +128,6 @@ HEREDOC;
 
         $results = $runner->runAndWaitForResults(5);
 
-
         $expectedResult = new ProcessResults(0, "1", "");
         $this->assertEquals($expectedResult, $results['string' . 1]);
 
