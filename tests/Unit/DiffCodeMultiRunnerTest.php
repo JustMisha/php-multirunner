@@ -2,6 +2,7 @@
 
 namespace JustMisha\MultiRunner\Tests\Unit;
 
+use Exception;
 use JustMisha\MultiRunner\DiffCodeMultiRunner;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
@@ -17,8 +18,11 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
     }
 
     /**
+     * Tests that we can run python and cmd/bash script in parallel.
+     *
      * @group python
-     * @throws \Exception
+     * @return void
+     * @throws Exception If Interpreter python not found.
      */
     public function testRunPythonAndCmdOrBashCodeWorks(): void
     {
