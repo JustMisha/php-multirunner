@@ -1,10 +1,20 @@
 <?php
 
+/**
+ * MultiRunner test classes: OsWrapperTest class.
+ *
+ * @package JustMisha\MultiRunner
+ * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
+ */
+
 namespace JustMisha\MultiRunner\Tests\Unit;
 
 use JustMisha\MultiRunner\Helpers\OsCommandsWrapper;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
+/**
+ * Tests methods of the OsWrapper class
+ */
 class OsWrapperTest extends BaseTestCase
 {
     /**
