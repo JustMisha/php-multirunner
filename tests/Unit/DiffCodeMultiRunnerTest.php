@@ -67,18 +67,4 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
         unset($runner);
         $this->assertFolderEmpty($baseFolder);
     }
-
-
-    /**
-     * Check whether a base folder clear
-     * after destroying BackgroundParallelProcesses
-     *
-     * @param string $dir
-     * @return void
-     */
-    protected function assertFolderEmpty(string $dir): void
-    {
-        $dirIterator = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
-        $this->assertFalse($dirIterator->valid());
-    }
 }
