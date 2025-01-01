@@ -246,6 +246,7 @@ HEREDOC;
     /**
      * @return void
      * @throws Throwable If interpreter node not found.
+     * @group node
      */
     public function testRunAndWaitForResultsWorksWhenTheNodeInterpreter(): void
     {
@@ -273,6 +274,7 @@ HEREDOC;
                 echo PHP_EOL;
                 echo 'Interpreter node not found. Skip the test.' . PHP_EOL;
                 $this->assertTrue(true);
+                return;
             }
             throw $t;
         }
