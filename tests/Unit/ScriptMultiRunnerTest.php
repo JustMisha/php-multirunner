@@ -1,7 +1,7 @@
 <?php
 
 /**
- * class ScriptMultiRunnerTest
+ * MultiRunner test classes: ScriptMultiRunnerTest class.
  *
  * @package JustMisha\MultiRunner
  * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
@@ -139,7 +139,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
             self::MAX_PARALLEL_PROCESSES,
             $scriptFullPath,
             null,
-            'python',
+            PYTHON_INTERPRETER_INVOCATION_NAME,
             [],
             ['PATH' => getenv('Path'), 'SYSTEMROOT' => getenv('SYSTEMROOT')]
         );

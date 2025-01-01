@@ -1,7 +1,7 @@
 <?php
 
 /**
- * class MockMultiRunnerRunTest
+ * MultiRunner test classes: MockMultiRunnerRunTest class.
  *
  * @package JustMisha\MultiRunner
  * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
@@ -9,19 +9,26 @@
 
 namespace JustMisha\MultiRunner\Tests\Unit;
 
-use JustMisha\MultiRunner\CodeMultiRunner;
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\MultiRunnerInterface;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
 
+/**
+ *
+ */
 class MockMultiRunnerRunTest extends BaseTestCase
 {
-    public function testWeCanUseMultiRunnerInterfaceForMocking(): void
+    /**
+     * We can use the implementation of MultiRunnerInterface for testing.
+     *
+     * @return void
+     */
+    public function testWeCanUseMultiRunnerInterfaceForTesting(): void
     {
         $totalProcessNums = 10;
         $baseFolder = dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'runtime';
 
-        $expectedResult = new ProcessResults(0, 'Hahaha', '');
+        $expectedResult = new ProcessResults(0, 'Hello!', '');
 
         $runner = $this->createMockRunnerImplementingMultiRunnerInterface($totalProcessNums, $expectedResult);
 
@@ -29,8 +36,8 @@ class MockMultiRunnerRunTest extends BaseTestCase
         $results = $runner->runAndWaitForResults($timeout);
 
         $this->assertCount(($totalProcessNums), $results);
-        $this->assertEquals($expectedResult, $results["1"]);
-        $this->assertEquals($expectedResult, $results[(string)$totalProcessNums]);
+        $this->assertEquals($expectedResult, $results["string1"]);
+        $this->assertEquals($expectedResult, $results['string' . $totalProcessNums]);
 
         unset($runner);
 
@@ -38,17 +45,16 @@ class MockMultiRunnerRunTest extends BaseTestCase
     }
 
     /**
-     * Create a mock MultiRunner to pass as an argument.
+     * Creates a simple MultiRunnerInterface implementation for testing.
      *
-     * @param integer $totalProcessNums
-     * @param ProcessResults $expectedResult
+     * @param integer $totalProcessNums The total number of processes.
+     * @param ProcessResults $expectedResult The ProcessResults object that the class must return.
      * @return MultiRunnerInterface
      */
     protected function createMockRunnerImplementingMultiRunnerInterface(
         int $totalProcessNums,
         ProcessResults $expectedResult
-    ): MultiRunnerInterface
-    {
+    ): MultiRunnerInterface {
         return new class ($totalProcessNums, $expectedResult) implements MultiRunnerInterface
         {
             private ProcessResults $expectedResult;
@@ -64,7 +70,7 @@ class MockMultiRunnerRunTest extends BaseTestCase
             {
                 $array = [];
                 for ($i = 1; $i <= $this->totalProcessNums; $i++) {
-                    $array["". $i] = $this->expectedResult;
+                    $array["string". $i] = $this->expectedResult;
                 }
                 return $array;
             }

@@ -203,7 +203,7 @@ HEREDOC;
         $totalProcessNums = 10;
         $result = "Hello";
         $baseFolder = $this->runtimeFullPath;
-        $interpreter = 'python';
+        $interpreter = PYTHON_INTERPRETER_INVOCATION_NAME;
         $interpreterArgs = [];
         $scriptText = "print('" . $result . "', sep = None, end = '')";
         $envVars = getenv();
@@ -246,6 +246,7 @@ HEREDOC;
     /**
      * @return void
      * @throws Throwable If interpreter node not found.
+     * @group node
      */
     public function testRunAndWaitForResultsWorksWhenTheNodeInterpreter(): void
     {
@@ -254,7 +255,7 @@ HEREDOC;
         $totalProcessNums = 10;
         $result = "Hello";
         $baseFolder = $this->runtimeFullPath;
-        $interpreter = 'node';
+        $interpreter = NODE_INTERPRETER_INVOCATION_NAME;
         $interpreterArgs = [];
         $scriptText = "process.stdout.write('" . $result . "')";
         $envVars = null;
@@ -273,6 +274,7 @@ HEREDOC;
                 echo PHP_EOL;
                 echo 'Interpreter node not found. Skip the test.' . PHP_EOL;
                 $this->assertTrue(true);
+                return;
             }
             throw $t;
         }
@@ -478,7 +480,7 @@ HEREDOC;
         int $maxParallelProcessNums,
         int $totalProcessNums = 10,
         string $scriptText = '<?php' . PHP_EOL . 'echo "Hello!";',
-        ProcessResults $expectedResult = null
+        ?ProcessResults $expectedResult = null
     ): void {
         if (is_null($expectedResult)) {
             $expectedResult = new ProcessResults(0, 'Hello!', '');

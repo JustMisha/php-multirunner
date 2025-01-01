@@ -65,7 +65,7 @@ class DiffCodeMultiRunnerTest extends BaseTestCase
 
         $this->assertTrue(true);
 
-        $interpreter = 'python';
+        $interpreter = PYTHON_INTERPRETER_INVOCATION_NAME;
         $scriptText = "print('" . $result . "', sep = None, end = '')";
 
         try {

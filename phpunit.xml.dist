@@ -23,5 +23,7 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <const name="PYTHON_INTERPRETER_INVOCATION_NAME" value="python3"/>
+        <const name="NODE_INTERPRETER_INVOCATION_NAME" value="node"/>
     </php>
 </phpunit>
