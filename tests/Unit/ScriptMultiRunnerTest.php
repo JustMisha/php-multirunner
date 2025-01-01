@@ -1,7 +1,7 @@
 <?php
 
 /**
- * class ScriptMultiRunnerTest
+ * MultiRunner test classes: ScriptMultiRunnerTest class.
  *
  * @package JustMisha\MultiRunner
  * @license https://github.com/JustMisha/php-multirunner/LICENSE.md MIT License
