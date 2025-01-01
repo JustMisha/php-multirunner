@@ -139,7 +139,7 @@ class ScriptMultiRunnerTest extends BaseTestCase
             self::MAX_PARALLEL_PROCESSES,
             $scriptFullPath,
             null,
-            'python',
+            PYTHON_INTERPRETER_INVOCATION_NAME,
             [],
             ['PATH' => getenv('Path'), 'SYSTEMROOT' => getenv('SYSTEMROOT')]
         );
