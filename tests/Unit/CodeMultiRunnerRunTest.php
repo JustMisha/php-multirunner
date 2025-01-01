@@ -478,7 +478,7 @@ HEREDOC;
         int $maxParallelProcessNums,
         int $totalProcessNums = 10,
         string $scriptText = '<?php' . PHP_EOL . 'echo "Hello!";',
-        ProcessResults $expectedResult = null
+        ?ProcessResults $expectedResult = null
     ): void {
         if (is_null($expectedResult)) {
             $expectedResult = new ProcessResults(0, 'Hello!', '');

@@ -57,7 +57,7 @@ final class ScriptMultiRunner extends MultiRunner
         string $interpreter = 'php',
         array $interpreterArgs = [],
         ?array $envVars = null,
-        OsCommandsWrapper $osCommandsWrapper = null
+        ?OsCommandsWrapper $osCommandsWrapper = null
     ) {
         parent::__construct($maxNumberParallelProcesses, $osCommandsWrapper);
 

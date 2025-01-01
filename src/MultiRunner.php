@@ -77,7 +77,7 @@ abstract class MultiRunner implements MultiRunnerInterface
      * @param integer $maxNumberParallelProcesses Maximum number of parallel processes running simultaneously.
      * @param OsCommandsWrapper|null $osCommandsWrapper Reference to OsCommandWrapper's instance or null.
      */
-    public function __construct(int $maxNumberParallelProcesses, OsCommandsWrapper $osCommandsWrapper = null)
+    public function __construct(int $maxNumberParallelProcesses, ?OsCommandsWrapper $osCommandsWrapper = null)
     {
         $this->maxNumberParallelProcesses = $maxNumberParallelProcesses;
         $this->osCommandsWrapper = $osCommandsWrapper ?? new OsCommandsWrapper();

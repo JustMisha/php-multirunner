@@ -98,7 +98,7 @@ namespace JustMisha\MultiRunner\Tests {
             ?string $name = null,
             array $data = [],
             string $dataName = '',
-            OsCommandsWrapper $osCommandsWrapper = null
+            ?OsCommandsWrapper $osCommandsWrapper = null
         ) {
             parent::__construct($name, $data, $dataName);
             if ($osCommandsWrapper) {

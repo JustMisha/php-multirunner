@@ -48,7 +48,7 @@ final class ProgramMultiRunner extends MultiRunner
         array $programOpts = [],
         ?string $cwd = null,
         ?array $envVars = null,
-        OsCommandsWrapper $osCommandsWrapper = null
+        ?OsCommandsWrapper $osCommandsWrapper = null
     ) {
         parent::__construct($maxNumberParallelProcesses, $osCommandsWrapper);
         $this->cwd = $this->checkAndNormalizeCWD($cwd);

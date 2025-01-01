@@ -58,7 +58,7 @@ final class CodeMultiRunner extends MultiRunner
         array $interpreterArgs = [],
         ?string $baseFolder = null,
         ?array $envVars = null,
-        OsCommandsWrapper $osCommandsWrapper = null
+        ?OsCommandsWrapper $osCommandsWrapper = null
     ) {
         parent::__construct($maxNumberParallelProcesses, $osCommandsWrapper);
 
