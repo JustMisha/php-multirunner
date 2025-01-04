@@ -81,6 +81,24 @@ And then there are three possible use cases:
 2. Run and forget (do nothing) &mdash; ```runAndForget()```;
 3. Run and get the first N results &mdash; ```runAndWaitForTheFirstNthResults()```.
 
+#### Data Exchange Between Parent and Child Processes
+
+The package uses the following data exchange scheme between parent code and child processes:
+1. One-time data transfer in the form of parameters when a child process is added;
+2. Receiving data from child processes from their standard output streams (stdout) and error output (stderr).
+
+There is no data exchange between the parent process and running child processes after they are started.
+
+To ensure that data other than plain text is properly transferred from a child process, it must be
+properly encoded: serialization, json representation, base64 conversion or other means of representing the data.
+
+### Limitations
+
+It is not intended to use output redirection when starting processes because.
+1. It may interfere with the established method of retrieving data from child processes;
+2. It will not work on Windows because when the proc_open() function is called, the
+   bypass_shell option is set to true and the process is started bypassing the cmd.exe shell.
+
 ### Dependency inversion during dependency injection
 
 If you need to pass some ```MultiRunner``` child class as a parameter to a constructor or other method,
