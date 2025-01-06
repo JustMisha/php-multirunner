@@ -390,8 +390,12 @@ HEREDOC;
         unset($runner);
 
         $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
-        $this->assertEquals($expectedResult, $results['string' . 1]);
-        $this->assertEquals($expectedResult, $results['string' . $resultsNumberToAwait]);
+        // There is no guarantee that the $results array will contain items
+        // in the order in which processes are added (started).
+        // So we extract the values and check its contents by indecies.
+        $resultsValues = array_values($results);
+        $this->assertEquals($expectedResult, $resultsValues[0]);
+        $this->assertEquals($expectedResult, $resultsValues[$resultsNumberToAwait - 1]);
 
         $this->assertFolderEmpty($baseFolder);
     }
