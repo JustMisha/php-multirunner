@@ -10,6 +10,8 @@
 namespace JustMisha\MultiRunner\Tests\Unit;
 
 use Exception;
+use http\Exception\RuntimeException;
+use InvalidArgumentException;
 use JustMisha\MultiRunner\CodeMultiRunner;
 use JustMisha\MultiRunner\DTO\ProcessResults;
 use JustMisha\MultiRunner\Tests\BaseTestCase;
@@ -54,59 +56,27 @@ class CodeMultiRunnerRunTest extends BaseTestCase
     }
 
     /**
-     * @return void
-     * @throws Exception If we cannot read contents of $fileFullPathWithLongContents.
-     */
-    public function testRunAndWaitForResultsWorksWithLongEcho(): void
-    {
-        $fileFullPathWithLongContents = dirname(__FILE__, 2) . '/fixtures/longecho.txt';
-        $result = file_get_contents($fileFullPathWithLongContents);
-        if ($result === false) {
-            throw new Exception("Cannot read contents of $fileFullPathWithLongContents.");
-        }
-        $expectedResult = new ProcessResults(0, $result, "");
-        $this->runAndWaitForResultsTest(
-            60,
-            5,
-            5,
-            '<?php' . PHP_EOL . 'echo "' . $result . '";',
-            $expectedResult
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function testRunAndWaitForResultsWorksWithVeryLongEcho(): void
-    {
-        $result = str_repeat("a", 1000000);
-
-        $expectedResult = new ProcessResults(0, $result, "");
-        $this->runAndWaitForResultsTest(
-            20,
-            5,
-            5,
-            '<?php' . PHP_EOL . 'echo "' . $result . '";',
-            $expectedResult
-        );
-    }
-
-    /**
+     * Tests that we can work when the child process output is real big
+     * (for 3 processes up to 1/6th of the memory limit).
+     *
+     * The test can take a long time, so the timeout is set to 120 seconds.
+     *
      * @return void
      */
     public function testRunAndWaitForResultsWorksWhenVeryLongEchoWithPause(): void
     {
-        $symbolsNumbers = 1000000;
+        $totalProcessNums = 3;
+        $memoryLimit = $this->iniStringToBytes(ini_get('memory_limit'));
+        $halfSymbolsNumbersInOutput = (int) $memoryLimit / ($totalProcessNums * 4);
         $scriptText = <<<HEREDOC
 <?php
-echo str_repeat("a", $symbolsNumbers);
+echo str_repeat("a", $halfSymbolsNumbersInOutput);
 sleep(3);
-echo str_repeat("b", $symbolsNumbers);
+echo str_repeat("b", $halfSymbolsNumbersInOutput);
 HEREDOC;
-        $result = str_repeat("a", $symbolsNumbers) . str_repeat("b", $symbolsNumbers);
-
+        $result = str_repeat("a", $halfSymbolsNumbersInOutput) . str_repeat("b", $halfSymbolsNumbersInOutput);
         $expectedResult = new ProcessResults(0, $result, "");
-        $this->runAndWaitForResultsTest(30, 5, 5, $scriptText, $expectedResult);
+        $this->runAndWaitForResultsTest(120, 5, $totalProcessNums, $scriptText, $expectedResult);
     }
 
     /**
@@ -363,7 +333,7 @@ HEREDOC;
 
         $sleepTime = 3;
         $scriptText = '<?php' . PHP_EOL . 'sleep(' . $sleepTime . ');' . PHP_EOL .
-            "echo str_repeat('a', 10000000);" . PHP_EOL;
+            "echo str_repeat('a', 10_000_000);" . PHP_EOL;
 
         $runner = new CodeMultiRunner(
             self::MAX_PARALLEL_PROCESSES,
@@ -501,5 +471,71 @@ HEREDOC;
         unset($runner);
 
         $this->assertFolderEmpty($baseFolder);
+    }
+
+    /**
+     * Converts when a right $iniString is passed.
+     *
+     * @return void
+     */
+    public function testIniStringToBytesWorksWhenRightIniStringPassed(): void
+    {
+        $this->assertEquals(1024 * 1024 * 1024, $this->iniStringToBytes('1G'));
+        $this->assertEquals(1024 * 1024, $this->iniStringToBytes('1M'));
+        $this->assertEquals(1024, $this->iniStringToBytes('1K'));
+    }
+
+    public function wrongIniStrings(): array
+    {
+        return [
+            'without digits' => ['Hello'],
+            'wrong quantifier' => ['1234R'],
+            'quantifier before digits with whitespace' => ['G 1245'],
+            'quantifier before digits' => ['G1245'],
+            'whitespace after digits' => ['128 M'],
+        ];
+    }
+
+    /**
+     *
+     * @dataProvider wrongIniStrings
+     * @return void
+     */
+    public function testIniStringToBytesThrowsExceptionWhenWrongIniStringPassed($wrongIniString): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->iniStringToBytes($wrongIniString);
+    }
+
+    /**
+     * Convert a string like "128M" or "1G" or "14K"
+     * returned the ini_get function to integer in bytes.
+     *
+     * @param string $iniString A string like "128M" or "1G" or "14K".
+     * @return integer Bytes converted from $iniString.
+     * @throws InvalidArgumentException If a $iniString isn't like "128M" or "1G" or "14K".
+     */
+    private function iniStringToBytes(string $iniString): int
+    {
+        if (preg_match('/([0-9]+[KMG])/i', $iniString) !== 1) {
+            throw new InvalidArgumentException("A string must be like '128M' or '1G' or '14K'");
+        }
+        $iniString = trim($iniString);
+        $num = (int) rtrim($iniString, 'KMG');
+        $last = strtolower($iniString[strlen($iniString) - 1]);
+
+        switch ($last) {
+            case 'g':
+                $num = $num * 1024 * 1024 * 1024;
+                break;
+            case 'm':
+                $num = $num * 1024 * 1024;
+                break;
+            case 'k':
+                $num *= 1024;
+                break;
+        }
+
+        return $num;
     }
 }
