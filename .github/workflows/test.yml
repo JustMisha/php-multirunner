@@ -13,7 +13,7 @@ jobs:
       contents: write
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         php: [8.3, 8.2, 8.1, 8.0, 7.4]
 #        os: [ubuntu-latest, windows-latest, macos-latest]
