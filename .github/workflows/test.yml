@@ -1,6 +1,11 @@
-name: Tests
-
-on: [push, pull_request]
+name: Manual Test Execution
+on:
+  workflow_dispatch:
+    inputs:
+      testType:
+        description: 'Type of tests to run'
+        required: true
+        default: 'integration'
 
 jobs:
   php-tests:
