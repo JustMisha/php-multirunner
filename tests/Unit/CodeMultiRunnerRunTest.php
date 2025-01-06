@@ -67,7 +67,7 @@ class CodeMultiRunnerRunTest extends BaseTestCase
     {
         $totalProcessNums = 3;
         $memoryLimit = $this->iniStringToBytes(ini_get('memory_limit'));
-        $halfSymbolsNumbersInOutput = (int) $memoryLimit / ($totalProcessNums * 4);
+        $halfSymbolsNumbersInOutput = (int)($memoryLimit / ($totalProcessNums * 4));
         $scriptText = <<<HEREDOC
 <?php
 echo str_repeat("a", $halfSymbolsNumbersInOutput);
