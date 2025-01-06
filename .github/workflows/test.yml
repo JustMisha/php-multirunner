@@ -31,6 +31,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          ini-values: memory_limit=128M
           extensions: dom, curl, libxml, mbstring, zip, bcmath, intl
           coverage: none
 
