@@ -1,4 +1,4 @@
-name: Manual Test Execution
+name: Tests Execution
 on:
   workflow_dispatch:
     inputs:
@@ -6,7 +6,13 @@ on:
         description: 'Type of tests to run'
         required: true
         default: 'integration'
-
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '**.php'
+  push:
+    paths:
+      - '**.php'
 jobs:
   php-tests:
     permissions:
