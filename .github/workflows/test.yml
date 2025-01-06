@@ -1,0 +1,41 @@
+name: Manual Test Execution
+on:
+  workflow_dispatch:
+    inputs:
+      testType:
+        description: 'Type of tests to run'
+        required: true
+        default: 'integration'
+
+jobs:
+  php-tests:
+    permissions:
+      contents: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.3, 8.2, 8.1, 8.0, 7.4]
+        dependency-version: [prefer-lowest, prefer-stable]
+        os: [ubuntu-latest, windows-latest]
+
+    name: ${{ matrix.os }} - PHP${{ matrix.php }} - ${{ matrix.dependency-version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, bcmath, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+
+      - name: Execute tests
+        run: vendor/bin/phpunit
