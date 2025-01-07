@@ -37,6 +37,19 @@ class OsCommandsWrapper
     }
 
     /**
+     * Find out if the current system is macOS (Darwin)
+     *
+     * @return boolean
+     */
+    public function isMacOS(): bool
+    {
+        if (trim(php_uname('s')) == 'Darwin') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Delete $dir and all its contents
      *
      * @param string $dir An absolute path to the directory to be deleted.
