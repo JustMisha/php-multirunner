@@ -270,6 +270,11 @@ class ScriptMultiRunnerTest extends BaseTestCase
     }
 
 
+    /**
+     *
+     * @group MacOsFailures
+     * @return void
+     */
     public function testWeCanRunScriptUsingEnvVarsSet(): void
     {
         $scriptFullPath = dirname(__FILE__, 2) .

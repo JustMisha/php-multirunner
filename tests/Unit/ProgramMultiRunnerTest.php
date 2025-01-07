@@ -21,6 +21,7 @@ class ProgramMultiRunnerTest extends BaseTestCase
     /**
      * Tests we can run multiple instances of a program simultaneously.
      *
+     * @group MacOsFailures
      * @return void
      */
     public function testWeCanRunMultipleInstancesOfAProgramSimultaneously(): void
@@ -56,6 +57,7 @@ class ProgramMultiRunnerTest extends BaseTestCase
     /**
      * Tests, we can run multiple instances of a long-running program simultaneously.
      *
+     * @group MacOsFailures
      * @return void
      */
     public function testWeCanRunMultipleInstancesOfALongRunningProgramSimultaneously(): void
@@ -96,6 +98,7 @@ class ProgramMultiRunnerTest extends BaseTestCase
      * Tests, we can run multiple instances of a program simultaneously
      * with complicated arguments.
      *
+     * @group MacOsFailures
      * @return void
      */
     public function testWeCanRunMultipleInstancesOfAProgramWithComplicatedArgumentsSimultaneously(): void
@@ -134,6 +137,7 @@ class ProgramMultiRunnerTest extends BaseTestCase
      * Tests, we can run multiple instances of a program simultaneously
      * when the cwd is set up.
      *
+     * @group MacOsFailures
      * @return void
      */
     public function testWeCanRunMultipleInstancesOfAProgramSimultaneouslyWhenCwdIsSetUp(): void

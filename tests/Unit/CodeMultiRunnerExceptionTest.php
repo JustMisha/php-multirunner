@@ -60,11 +60,12 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
      *
      * To make it work in docker, it must be started
      * with "--cap-add LINUX_IMMUTABLE" argument
-     *
+     * @group MacOsFailures
      * @return void
      */
     public function testThrowExceptionIfFolderCannotBeCreated(): void
     {
+        var_dump(php_uname('s'));
         if ($this->isWindows()) {
             // For the GitHub action, skip the test
             // if it runs as the admin user.
