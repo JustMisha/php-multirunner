@@ -79,7 +79,11 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
             if (!file_exists($baseFolder)) {
                 mkdir($baseFolder);
             }
-            exec(sprintf("chattr +i %s", escapeshellarg($baseFolder)));
+            $setImmutableCommand = sprintf("chattr +i %s", escapeshellarg($baseFolder));
+            if ($this->osCommandsWrapper->isMacOS()) {
+                $setImmutableCommand = sprintf("chflags -R uchg %s", escapeshellarg($baseFolder));
+            }
+            exec($setImmutableCommand);
         }
 
         $this->expectExceptionMessage('Cannot create the folder for processing');
