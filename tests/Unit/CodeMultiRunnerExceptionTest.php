@@ -70,7 +70,7 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
             var_dump(get_current_user() === 'runneradmin');
             // For the GitHub action, skip the test
             // if it runs as the admin user.
-            if (get_current_user() === '"runneradmin') {
+            if (get_current_user() === 'runneradmin') {
                 $this->assertTrue(true);
                 return;
             }
