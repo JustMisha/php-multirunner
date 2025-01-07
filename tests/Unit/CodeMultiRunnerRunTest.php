@@ -362,40 +362,9 @@ HEREDOC;
      */
     public function testRunAndWaitForTheFirstNthResultsWorks(): void
     {
-        $timeout = 10;
-        $maxParallelProcessNums = 10;
-        $totalProcessNums = 100;
-        $result = 'Hello!';
-
         $baseFolder = $this->runtimeFullPath;
-        $runner = new CodeMultiRunner(
-            $maxParallelProcessNums,
-            '<?php' . PHP_EOL . 'echo "Hello!";',
-            'php',
-            [],
-            $baseFolder,
-            null,
-            null
-        );
 
-        for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess('string' . $i);
-        }
-
-        $resultsNumberToAwait = 10; // = $maxParallelProcesses which is a minimum chunk
-
-        $results = $runner->runAndWaitForTheFirstNthResults($timeout, $resultsNumberToAwait);
-
-        $expectedResult = new ProcessResults(0, $result, "");
-        unset($runner);
-
-        $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
-        // There is no guarantee that the $results array will contain items
-        // in the order in which processes are added (started).
-        // So we extract the values and check its contents by indecies.
-        $resultsValues = array_values($results);
-        $this->assertEquals($expectedResult, $resultsValues[0]);
-        $this->assertEquals($expectedResult, $resultsValues[$resultsNumberToAwait - 1]);
+        $this->runAndWaitForTheFirstNthResultsTest($baseFolder);
 
         $this->assertFolderEmpty($baseFolder);
     }
@@ -405,37 +374,9 @@ HEREDOC;
      */
     public function testRunAndWaitForTheFirstNthResultsWorksWithoutBaseFolder(): void
     {
-        $timeout = 10;
-        $maxParallelProcessNums = 10;
-        $totalProcessNums = 100;
-        $result = 'Hello!';
-
         $baseFolder = null;
-        $runner = new CodeMultiRunner(
-            $maxParallelProcessNums,
-            '<?php' . PHP_EOL . 'echo "Hello!";',
-            'php',
-            [],
-            $baseFolder,
-            null,
-            null
-        );
 
-        for ($i = 1; $i <= $totalProcessNums; $i++) {
-            $runner->addProcess('string' . $i);
-        }
-
-        $resultsNumberToAwait = 10; // = $maxParallelProcesses which is a minimum chunk
-
-        $results = $runner->runAndWaitForTheFirstNthResults($timeout, $resultsNumberToAwait);
-
-        $expectedResult = new ProcessResults(0, $result, "");
-
-        unset($runner);
-
-        $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
-        $this->assertEquals($expectedResult, $results['string' . 1]);
-        $this->assertEquals($expectedResult, $results['string' . $resultsNumberToAwait]);
+        $this->runAndWaitForTheFirstNthResultsTest($baseFolder);
     }
 
     /**
@@ -541,5 +482,46 @@ HEREDOC;
         }
 
         return $num;
+    }
+
+    /**
+     * @param string $baseFolder
+     * @return void
+     */
+    protected function runAndWaitForTheFirstNthResultsTest(?string $baseFolder): void
+    {
+        $timeout = 10;
+        $maxParallelProcessNums = 10;
+        $totalProcessNums = 100;
+        $result = 'Hello!';
+
+        $runner = new CodeMultiRunner(
+            $maxParallelProcessNums,
+            '<?php' . PHP_EOL . 'echo "Hello!";',
+            'php',
+            [],
+            $baseFolder,
+            null,
+            null
+        );
+
+        for ($i = 1; $i <= $totalProcessNums; $i++) {
+            $runner->addProcess('string' . $i);
+        }
+
+        $resultsNumberToAwait = 10; // = $maxParallelProcesses which is a minimum chunk
+
+        $results = $runner->runAndWaitForTheFirstNthResults($timeout, $resultsNumberToAwait);
+
+        $expectedResult = new ProcessResults(0, $result, "");
+        unset($runner);
+
+        $this->assertTrue(count($results) >= $resultsNumberToAwait && count($results) < $totalProcessNums);
+        // There is no guarantee that the $results array will contain items
+        // in the order in which processes are added (started).
+        // So we extract the values and check its contents by indecies.
+        $resultsValues = array_values($results);
+        $this->assertEquals($expectedResult, $resultsValues[0]);
+        $this->assertEquals($expectedResult, $resultsValues[$resultsNumberToAwait - 1]);
     }
 }
