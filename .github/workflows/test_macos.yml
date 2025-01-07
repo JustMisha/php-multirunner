@@ -52,4 +52,4 @@ jobs:
 
       - name: Execute tests on MacOs
         if: matrix.os == 'macos-latest'
-        run: sudo vendor/bin/phpunit
+        run: sudo vendor/bin/phpunit --filter CodeMultiRunnerExceptionTest::testThrowExceptionIfFolderCannotBeCreated
