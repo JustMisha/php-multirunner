@@ -22,6 +22,7 @@ class DiffProgramMultiRunnerTest extends BaseTestCase
     /**
      * Tests that we can run multiple instances of different programs simultaneously.
      *
+     * @group MacOsFailures
      * @return void
      */
     public function testRealDiffProgramMultiRun(): void
