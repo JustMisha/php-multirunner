@@ -8,8 +8,6 @@ on:
         default: 'integration'
   pull_request:
     types: [opened, reopened]
-    paths:
-      - '**.php'
   push:
     paths:
       - '**.php'
