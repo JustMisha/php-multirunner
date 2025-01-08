@@ -41,4 +41,4 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Execute tests on MacOs
-        run: sudo vendor/bin/phpunit --exclude MacOsFailures
+        run: sudo vendor/bin/phpunit --exclude MacOsFailures --testdox
