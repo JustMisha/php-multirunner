@@ -18,7 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.3, 8.2, 8.1, 8.0, 7.4]
-        os: [ubuntu-latest, windows-latest, macos-latest]
 
     name: ubuntu-latest - PHP${{ matrix.php }}
 
@@ -38,4 +37,4 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Execute tests on Linux
-        run: sudo vendor/bin/phpunit
+        run: sudo vendor/bin/phpunit --testdox
