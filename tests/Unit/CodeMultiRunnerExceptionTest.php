@@ -65,7 +65,6 @@ class CodeMultiRunnerExceptionTest extends BaseTestCase
      */
     public function testThrowExceptionIfFolderCannotBeCreated(): void
     {
-        var_dump(php_uname('s'));
         if ($this->isWindows()) {
             // For the GitHub action, skip the test
             // if it runs as the admin user.
