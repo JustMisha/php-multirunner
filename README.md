@@ -1,4 +1,5 @@
 [![ru](docs/ru.svg)](docs/README.ru.md)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/JustMisha/php-multirunner/CI?label=build)
 # PHP MultiRunner
 
 A package for running multiple processes in parallel in the background and, if necessary,
