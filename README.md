@@ -1,4 +1,4 @@
-[![ru](docs/ru.svg)](docs/README.ru.md)
+[![ru](docs/ru.svg)](docs/README.ru.md) ![PHP versions](docs/php_version.svg) [![license MIT](docs/license-MIT.svg)](LICENSE.md)
 # PHP MultiRunner
 
 A package for running multiple processes in parallel in the background and, if necessary,
