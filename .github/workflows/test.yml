@@ -39,7 +39,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.php == '8.3' }}
         run: sudo vendor/bin/phpunit --testdox --coverage-clover clover.xml
 
-      - name: Execute tests on Linux with cover
+      - name: Execute tests on Linux without cover
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.php != '8.3' }}
         run: sudo vendor/bin/phpunit --testdox
 
