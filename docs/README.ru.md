@@ -1,4 +1,4 @@
-[![en](en.svg)](../README.md) ![PHP versions](php_version.svg) [![license MIT](license-MIT.svg)](../LICENSE.md)
+[![en](en.svg)](../README.md) ![PHP versions](php_version.svg) [![license MIT](license-MIT.svg)](../LICENSE.md) ![coverage](badge-coverage.svg)
 # PHP MultiRunner
 
 Пакет для запуска множества процессов параллельно в фоне и, если необходимо, 
