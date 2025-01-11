@@ -1,6 +1,7 @@
 {
     "name": "justmisha/php-multirunner",
     "description": "The package gives the ability to run multiple processes (programs and scripts) in parallel in the background.",
+    "keywords": "php, multiple, processes, parallel, background, proc_open, multirunner",
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/JustMisha/php-multirunner",
