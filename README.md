@@ -191,6 +191,17 @@ The tests use the python and node.js interpreters. If you don't have them instal
 then run the tests with the command line option ```--exclude python,node``` or use the configuration file 
 ```phpunit.exclude-python-node.xml``` configuration file.
 
+## Safety and Security
+
+Actions performed by processes executing this package may cause damage to 
+the environment in which they are running and/or to user data.
+
+The escaping of arguments that the package does is only to ensure that they 
+are correctly passed to the process, and does not protect against malicious use.
+
+Please be careful about what programs, scripts, or code you run and what 
+arguments you pass to them to make sure they do not cause damage.
+
 ## Contributing
 
 Please send your suggestions, comments, and pull requests.
