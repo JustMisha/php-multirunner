@@ -154,6 +154,9 @@ it is worth using the ```MultiRunnerInterface``` interface to remove the depende
 * [php](https://www.php.net/) (version >=7.4);
 * [Composer](https://getcomposer.org/);
 * [Git](https://git-scm.com) - for development.
+* PHP instances that use this package, must allow ```proc_open()```. 
+    This function  is often disabled in some environments due to security policies via
+    ```disable_functions``` in ```php.ini```.
 
 
 ### For use in your project
