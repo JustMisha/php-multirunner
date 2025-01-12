@@ -11,7 +11,11 @@ This package:
 - has a very simple interface;
 - can run any program, script or code that has an interpreter installed on the system;
 - works on both Windows and Linux;
-- allows to transfer large amounts of data between processes and your code - tests confirmed about 2Mb.
+- allows you to transfer large amounts of data between processes and your code - 
+    tests confirm 1/6 of the value set by the memory_limit parameter in php.ini 
+    with 3 processes, i.e:
+     * 21Mb with memory_limit=128Mb;
+     * 42Mb with memory_limit=128Mb.
 
 Under the hood, it uses proc_open() to start processes and hides numerous complexities 
 and peculiarities of working with processes in PHP.
