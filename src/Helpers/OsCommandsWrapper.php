@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
+use SplFileInfo;
 
 /**
  * The class with methods to work with OS dependent functions.
@@ -213,6 +214,9 @@ class OsCommandsWrapper
             new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
         );
+        // phpcs:disable
+        /** @var SplFileInfo $file */
+        // phpcs:enable
         foreach ($files as $file) {
             if ($file->isDir() === true) {
                 rmdir($file->getPathName());
