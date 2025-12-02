@@ -66,7 +66,9 @@ final class DiffCodeMultiRunner extends MultiRunner
         if ($this->osCommandsWrapper->programExists($interpreter) !== 0) {
             throw new RuntimeException('Interpreter ' . $interpreter . ' not found');
         }
-
+        // phpcs:disable
+        /** @psalm-suppress PossiblyNullOperand */
+        // phpcs:enable
         $mainScriptFullPath = $this->cwd . DIRECTORY_SEPARATOR .
             $processId . '_script' . $this->scriptFileExtension($interpreter);
         if (file_put_contents($mainScriptFullPath, $scriptText) === false) {

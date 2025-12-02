@@ -209,8 +209,14 @@ abstract class MultiRunner implements MultiRunnerInterface
             // Before we can get the status of a process
             // we should get the contents of stdout and stderr pipes
             // to avoid deadlocks if the process sends a lot of output.
+            // phpcs:disable
+            /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
+            // phpcs:enable
             $processData->stdout = ($processData->stdout ?? '') .
                 stream_get_contents($processData->pipes[self::STDOUT]);
+            // phpcs:disable
+            /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
+            // phpcs:enable
             $processData->stderr = ($processData->stderr ?? '') .
                 stream_get_contents($processData->pipes[self::STDERR]);
             $procStatus = proc_get_status($processData->process);
@@ -339,7 +345,7 @@ abstract class MultiRunner implements MultiRunnerInterface
         set_error_handler(
             function ($errorSeverityNum, $message, $file, $line): bool {
                 if (error_reporting()) {
-                    // @noinspection PhpUnhandledExceptionInspection
+                    /* @noinspection PhpUnhandledExceptionInspection */
                     throw new ErrorException($message, 0, $errorSeverityNum, $file, $line);
                 }
                 return true;
@@ -533,6 +539,9 @@ abstract class MultiRunner implements MultiRunnerInterface
     protected function closeProcess(string $processId, RunningProcessData $processData): int
     {
         foreach ($processData->pipes as $pipe) {
+            // phpcs:disable
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            // phpcs:enable
             if (is_resource($pipe)) {
                 fclose($pipe);
             }

@@ -11,6 +11,10 @@ namespace JustMisha\MultiRunner\DTO;
 
 /**
  * Just LocalDTO class for keeping data of each running process
+ *
+ * phpcs:disable
+ * @psalm-suppress MissingConstructor
+ * phpcs:enable
  */
 class RunningProcessData
 {
