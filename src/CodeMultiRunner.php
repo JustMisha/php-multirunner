@@ -65,7 +65,9 @@ final class CodeMultiRunner extends MultiRunner
         $this->setupInterpreter($interpreter, $interpreterArgs);
 
         $this->setupCwdForCode($baseFolder);
-
+        // phpcs:disable
+        /** @psalm-suppress PossiblyNullOperand */
+        // phpcs:enable
         $this->mainScriptFullPath = $this->cwd . DIRECTORY_SEPARATOR
             . 'main' . $this->scriptFileExtension($interpreter);
         if (file_put_contents($this->mainScriptFullPath, $scriptText) === false) {

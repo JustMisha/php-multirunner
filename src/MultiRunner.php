@@ -209,8 +209,14 @@ abstract class MultiRunner implements MultiRunnerInterface
             // Before we can get the status of a process
             // we should get the contents of stdout and stderr pipes
             // to avoid deadlocks if the process sends a lot of output.
+            // phpcs:disable
+            /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
+            // phpcs:enable
             $processData->stdout = ($processData->stdout ?? '') .
                 stream_get_contents($processData->pipes[self::STDOUT]);
+            // phpcs:disable
+            /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
+            // phpcs:enable
             $processData->stderr = ($processData->stderr ?? '') .
                 stream_get_contents($processData->pipes[self::STDERR]);
             $procStatus = proc_get_status($processData->process);
@@ -305,8 +311,8 @@ abstract class MultiRunner implements MultiRunnerInterface
      */
     protected function checkAndNormalizeCWD(?string $cwd): ?string
     {
-        if (empty($cwd)) {
-            return $cwd;
+        if (is_null($cwd)) {
+            return null;
         }
         $cwdRealPath = realpath($cwd);
         if ($cwdRealPath === false) {
@@ -339,7 +345,7 @@ abstract class MultiRunner implements MultiRunnerInterface
         set_error_handler(
             function ($errorSeverityNum, $message, $file, $line): bool {
                 if (error_reporting()) {
-                    // @noinspection PhpUnhandledExceptionInspection
+                    /* @noinspection PhpUnhandledExceptionInspection */
                     throw new ErrorException($message, 0, $errorSeverityNum, $file, $line);
                 }
                 return true;
@@ -509,11 +515,17 @@ abstract class MultiRunner implements MultiRunnerInterface
     protected function canProcessesRunViaPopen(): bool
     {
         foreach ($this->processesQueue as $processParams) {
-            if (
-                !empty($processParams->cwd) ||
-                !empty($processParams->envVars) ||
-                strpos($processParams->commandLine, '%') !== false
-            ) {
+            /* @phpstan-ignore booleanAnd.rightAlwaysTrue */
+            if (isset($processParams->cwd) && is_string($processParams->cwd) && strlen(trim($processParams->cwd)) > 0) {
+                return false;
+            }
+            if (isset($processParams->envVars) && count($processParams->envVars) > 0) {
+                return false;
+            }
+            // phpcs:disable
+            /** @psalm-suppress RedundantCondition */
+            // phpcs:enable
+            if (isset($processParams->commandLine) && strpos($processParams->commandLine, '%') !== false) {
                 return false;
             }
         }
@@ -533,6 +545,9 @@ abstract class MultiRunner implements MultiRunnerInterface
     protected function closeProcess(string $processId, RunningProcessData $processData): int
     {
         foreach ($processData->pipes as $pipe) {
+            // phpcs:disable
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            // phpcs:enable
             if (is_resource($pipe)) {
                 fclose($pipe);
             }
@@ -562,7 +577,7 @@ abstract class MultiRunner implements MultiRunnerInterface
         if ($this->osCommandsWrapper->programExists($program) === 0) {
             return $program;
         }
-        if (!empty($cwd) && file_exists($cwd)) {
+        if (is_string($cwd) && strlen(trim($cwd)) > 0 && file_exists($cwd)) {
             $programInCwd = $cwd . DIRECTORY_SEPARATOR . $program;
             if ($this->osCommandsWrapper->programExists($programInCwd) === 0) {
                 return $programInCwd;
@@ -579,7 +594,7 @@ abstract class MultiRunner implements MultiRunnerInterface
      */
     protected function clearAndDeleteCwd()
     {
-        if (!empty($this->cwd) && file_exists($this->cwd)) {
+        if (isset($this->cwd) && strlen(trim($this->cwd)) > 0 && file_exists($this->cwd)) {
             $this->osCommandsWrapper->removeDirRecursive($this->cwd);
         }
     }

@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
+use SplFileInfo;
 
 /**
  * The class with methods to work with OS dependent functions.
@@ -156,6 +157,10 @@ class OsCommandsWrapper
                 case '\\': // Matching backslashes are escaped if quoted.
                     return $match[0] . $match[0];
                 default:
+                    // phpcs:disable
+                    /** @psalm-suppress PossiblyFalseArgument */
+                    // phpcs:enable
+                    // Because there is no way $match[0] can be false.
                     throw new InvalidArgumentException(
                         sprintf(
                             "Invalid byte at offset %d: 0x%02X",
@@ -173,7 +178,9 @@ class OsCommandsWrapper
                 ? new InvalidArgumentException("Invalid UTF-8 string")
                 : new Error("PCRE error: " . preg_last_error());
         }
-
+        // phpcs:disable
+        /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
+        // phpcs:enable
         return $quote // Only quote when needed.
             ? '"' . $escaped . '"'
             : $value;
@@ -213,6 +220,9 @@ class OsCommandsWrapper
             new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
         );
+        // phpcs:disable
+        /** @var SplFileInfo $file */
+        // phpcs:enable
         foreach ($files as $file) {
             if ($file->isDir() === true) {
                 rmdir($file->getPathName());
