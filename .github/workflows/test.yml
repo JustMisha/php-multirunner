@@ -32,8 +32,8 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, bcmath, intl
           coverage: xdebug
 
-      - name: Install composer
-        run: composer install --no-interaction --prefer-dist
+      - name: Update composer
+        run: composer update --prefer-stable --no-interaction --prefer-dist
 
       - name: Execute tests on Linux with cover
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.php == '8.3' }}
