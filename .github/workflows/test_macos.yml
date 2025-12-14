@@ -26,8 +26,8 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, bcmath, intl
           coverage: none
 
-      - name: Install composer
-        run: composer install --no-interaction --prefer-dist
+      - name: Update composer
+        run: composer update --prefer-stable --no-interaction --prefer-dist
 
       - name: Execute tests on MacOs
         run: sudo vendor/bin/phpunit --exclude MacOsFailures --testdox

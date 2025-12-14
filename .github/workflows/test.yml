@@ -2,7 +2,7 @@ name: Tests Execution
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     paths-ignore:
       - '**.md'
       - 'docs/**'
