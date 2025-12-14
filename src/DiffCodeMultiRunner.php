@@ -32,7 +32,7 @@ final class DiffCodeMultiRunner extends MultiRunner
     public function __construct(
         int $maxNumberParallelProcesses,
         ?string $baseFolder = null,
-        OsCommandsWrapper $osCommandsWrapper = null
+        ?OsCommandsWrapper $osCommandsWrapper = null
     ) {
         parent::__construct($maxNumberParallelProcesses, $osCommandsWrapper);
 
