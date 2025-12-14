@@ -9,6 +9,7 @@
     findUnusedCode="true"
     allowStringToStandInForClass="true"
     findUnusedPsalmSuppress="true"
+    noCache="true"
 >
     <projectFiles>
         <directory name="src" />
