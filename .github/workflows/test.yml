@@ -2,7 +2,7 @@ name: Tests Execution
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     paths-ignore:
       - '**.md'
       - 'docs/**'
@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php: [8.3, 8.2, 8.1, 8.0, 7.4]
+        php: [8.5, 8.4, 8.3, 8.2, 8.1, 8.0, 7.4]
 
     name: ${{ matrix.os }} - PHP${{ matrix.php }}
 
@@ -32,8 +32,8 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, bcmath, intl
           coverage: xdebug
 
-      - name: Install composer
-        run: composer install --no-interaction --prefer-dist
+      - name: Update composer
+        run: composer update --prefer-stable --no-interaction --prefer-dist
 
       - name: Execute tests on Linux with cover
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.php == '8.3' }}
