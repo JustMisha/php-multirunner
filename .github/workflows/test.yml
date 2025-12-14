@@ -3,12 +3,39 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, reopened, synchronize]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
+    branches:
+      - main
 
 jobs:
+  check-tests:
+    permissions:
+      pull-requests: read
+    runs-on: ${{ matrix.os }}
+    outputs:
+      needed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: Paths Changes Filter
+        uses: dorny/paths-filter@v3.0.2
+        id: filter
+        with:
+          filters: |
+            changed:
+              - 'src/**'
+              - 'tests/**'
+              - '.github/workflows/**.yml'
+
+  no-tests-always-true:
+    name: Run if no tests
+    needs: check-tests
+    if: ${{ !needs.check-tests.outputs.needed }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Just runs
+        run: echo "This job is used to prevent the workflow status from showing as failed when no tests are run."
+
   php-tests:
+    needs: check-tests
+    if: ${{ needs.check-tests.outputs.needed }}
     permissions:
       contents: write
     runs-on: ${{ matrix.os }}
