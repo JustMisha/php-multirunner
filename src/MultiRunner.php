@@ -515,8 +515,7 @@ abstract class MultiRunner implements MultiRunnerInterface
     protected function canProcessesRunViaPopen(): bool
     {
         foreach ($this->processesQueue as $processParams) {
-            /* @phpstan-ignore booleanAnd.rightAlwaysTrue */
-            if (isset($processParams->cwd) && is_string($processParams->cwd) && strlen(trim($processParams->cwd)) > 0) {
+            if (isset($processParams->cwd) && strlen(trim($processParams->cwd)) > 0) {
                 return false;
             }
             if (isset($processParams->envVars) && count($processParams->envVars) > 0) {
