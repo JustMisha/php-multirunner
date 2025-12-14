@@ -10,7 +10,7 @@ jobs:
   check-tests:
     permissions:
       pull-requests: read
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     outputs:
       needed: ${{ steps.filter.outputs.changed }}
     steps:
